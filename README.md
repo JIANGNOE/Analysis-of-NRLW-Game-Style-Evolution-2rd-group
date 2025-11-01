@@ -14,9 +14,9 @@
 - [Findings](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#7-findings-outline)
 - [Usage](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#8-usage)
 - [Support information](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#10-support-information)
-- [Contributors](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#11-contributors)
-- [References](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#12-references-and-background-reading)
-- [Summary](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#13-summary)
+- [Contributors](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#11-contributors)
+- [References](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#12-references-and-background-reading)
+- [Summary](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#13-summary)
 
 
 ## 1. Overview
@@ -306,19 +306,3 @@ If future cohorts want to add models, create a new folder `models/` and add your
 These references show that the women’s game has been studied from a physical perspective. Our work adds a tactical and possession level perspective on top of that.
 
 ---
-
-
-
-
-# Task
-
-# Getting start with modelling
-## Linear regression
-## Machine learning models
-## Model comparison
-
-# Conclusion
-
-# Reference list
-
-# Appendix
