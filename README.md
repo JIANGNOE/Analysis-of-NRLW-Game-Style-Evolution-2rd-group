@@ -4,7 +4,6 @@
 
 # DATA3001 NRLW Modelling, Group 1  
 **Title:** Predicting Far Sets in the NRLW From Pre Set Context  
-**Date:** 1 November 2025  
 **Dataset used:** `data.csv` (duplicate of `product/sets.csv`) from repository **data3001-data NRLW – Change in NRLW Game Patterns (2018 to Present)**
 
 ---
@@ -15,7 +14,7 @@ This repository contains the modelling stage of our DATA3001 project. In Week 5 
 
 This document shows how that data product can actually be used for analysis. We take the set level file (`data.csv`) and build a simple, leakage safe predictive model that answers one sport relevant question.
 
-> **Research question (RQ1)**  
+> **Research question**  
 > **Given what we know at the start of a set, what is the chance this set will be a far set?**
 
 We define a far set as a possession whose largest forward gain is at or above a fixed metres threshold that was first measured in the 2018 season. We keep this threshold constant over time so that we can compare seasons and teams on the same scale.
@@ -44,7 +43,7 @@ We chose the question about far sets because:
 4. It gives the partner a way to benchmark teams and seasons, even though the competition has expanded.
 5. It sets up future work such as expected metres, kick vs run effectiveness and opponent adjustments.
 
-### 2.3 Why it is of interest to the industry partner
+### 2.3 Why it is of interest
 
 Coaches and performance staff often ask questions that sound like this:
 
@@ -108,7 +107,7 @@ There are other variables, such as `maxRun`, `maxKick` and `n_events`, but those
 
 ### 4.1 Formal statement
 
-> **RQ1:** Given only the information available at the start of a set, can we predict the probability that the set will be a far set?
+>  Given only the information available at the start of a set, can we predict the probability that the set will be a far set?
 
 We express this as a binary classification problem
 
@@ -125,7 +124,6 @@ P(\text{far\_set} = 1 \mid \text{Seasonid}, \text{Teamname}, \text{halfNumber}, 
    - `far_set = 0` otherwise
 4. Keep this benchmark fixed for all later seasons. That allows us to check if the competition got better, because we are always asking if a set meets the 2018 bar.
 
-This is exactly what the Week 5 repository text described as a leakage safe baseline.
 
 ---
 
@@ -183,7 +181,7 @@ We use **logistic regression** as the main model. Reasons:
 - It is easy to explain to a non technical audience.
 - It shows clearly which fields (team, zone, season) push the probability up or down.
 
-We can include a second model, for example a Random Forest, to show that a slightly more flexible method does not change the story too much.
+Add more models here
 
 ### 6.2 Features
 
@@ -273,20 +271,14 @@ We include these in the final report to get marks for critical analysis.
 **Contact:**  
 DATA3001 NRLW Modelling Group 1  
 Email (student): `mushfiq.ahmed19@gmail.com`  
-Preferred contact: email, then Teams if within UNSW  
-Please include the subject line `DATA3001 NRLW Modelling` so we can filter messages.
-
-**For tutors:**  
-If you need to re run the modelling notebook, we can provide a lightweight CSV with only the fields we used.
 
 ---
 
 ## 11. Contributors
 
-- **Data engineering and set level table:** Ragulan, Yanlei  
-- **Derived variables and validation:** Mushfiq, Aravind  
-- **Exploratory analysis and figures:** Elliot  
-- **Modelling (this document):** DATA3001 NRLW Modelling, Group 1  
+- **Data engineering and set level table:** [INSERT NAMES]
+- **Derived variables and validation:** [INSERT NAMES]
+- **Exploratory analysis and figures:** [INSERT NAMES]
 - **Report writing and README structuring:** Group effort
 
 If future cohorts want to add models, create a new folder `models/` and add your notebook without changing `data.csv`.
@@ -304,15 +296,6 @@ These references show that the women’s game has been studied from a physical p
 
 ---
 
-## 13. Summary
-
-- We built a set level NRLW dataset in Week 5.  
-- We are now using it to answer a single, clear question about the chance of a far set.  
-- The model uses only pre set features, so it avoids leakage.  
-- The output is useful for coaches, analysts and league staff.  
-- The structure here matches what is required for the group presentation in Week 10 and the modelling report in Week 11.
-
-This README can be included in the submitted repository as the top level documentation for the modelling component.
 
 
 
