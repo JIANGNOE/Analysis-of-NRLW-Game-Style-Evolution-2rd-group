@@ -1,12 +1,23 @@
-# MODELLING
 
-# Table of Contents
 
-# DATA3001 NRLW Modelling, Group 1  
-**Title:** Predicting Far Sets in the NRLW From Pre Set Context  
+# Predicting Far Sets in the NRLW From Pre Set Context  
 **Dataset used:** `data.csv` (duplicate of `product/sets.csv`) from repository **data3001-data NRLW – Change in NRLW Game Patterns (2018 to Present)**
 
 ---
+## Table of contents
+- [Overview](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#1-overview)
+- [Background](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#2-background)
+- [Data](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#3-data)
+- [Research question](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#4-research-question)
+- [Workflow](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#5-workflow)
+- [Modelling](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#6-modelling-approach)
+- [Findings](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#7-findings-outline)
+- [Usage](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#8-usage)
+- [Support information](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#10-support-information)
+- [Contributors](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#11-contributors)
+- [References](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#12-references-and-background-reading)
+- [Summary](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/edit/main/README.md#13-summary)
+
 
 ## 1. Overview
 
