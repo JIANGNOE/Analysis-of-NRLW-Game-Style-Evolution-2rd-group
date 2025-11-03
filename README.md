@@ -1,7 +1,7 @@
 # DATA3001 NRLW Modelling — Group 1
 **Title:** Predicting Far Sets in the NRLW from Pre-Set Context  
 **Date:** 3 November 2025  
-**Dataset:** `data.csv` (duplicate of `product/sets.csv`) — built from **Data Group 1’s product** (our renamed Week-5 set-level table)
+**Dataset:** `data.csv` (duplicate of `product/sets.csv`) — built from **Data Group 1’s product** 
 
 ---
 
@@ -17,9 +17,6 @@
 - [9. Recommendations](#9-recommendations)
 - [10. Conclusion](#10-conclusion)
 - [11. Appendix](#11-appendix)
-  - [Appendix A — Reproducibility steps (no code here)](#appendix-a--reproducibility-steps-no-code-here)
-  - [Appendix B — Repository layout and handover](#appendix-b--repository-layout-and-handover)
-  - [Appendix C — References](#appendix-c--references)
 
 ---
 
@@ -35,39 +32,43 @@ A “far set” is a set whose largest forward gain meets or exceeds a fixed met
 
 ## 2. Executive summary
 
-- We estimate the probability that a set will be “far” using **only pre-set context**: season, team, half, and starting field zone.  
-- We use a **time-aware** design: train on earlier seasons, evaluate on later seasons.  
-- We run **four models**:  
-  1) Linear Probability Model (OLS)  
-  2) Regularised Logistic Regression  
-  3) Random Forest  
-  4) Gradient Boosting with probability calibration  
-- Directionally, field position is the strongest driver. Team and season add signal. Tree-based models rank slightly better; logistic is easiest to explain.  
-- The output supports **post-match review**, **team benchmarking**, and **league monitoring**.
+**What we asked:**  
+Given only what we know at the **start** of a set (season, team, half, starting zone), what is the **chance** this possession will be a **far set**?
+
+**What we did:**  
+We built a leakage-safe, **context-adjusted** probability using four simple models (Linear Probability Model, Regularised Logistic Regression, Random Forest, Gradient Boosting with calibration). We trained on earlier seasons and tested on later seasons to respect how the NRLW has evolved.
+
+**What this gives you:**  
+- A fair benchmark that controls for **where** sets start and **when** they occur.  
+- Clear team and season comparisons that are not biased by field position.  
+- A simple way to spot **over-performance** and **under-performance** after each game.
+
+**Bottom line:**  
+Yes — pre-set context is enough to estimate far-set likelihood with useful accuracy. Start zone drives most of the signal; team and season add meaningful lift. Use the calibrated model for ranking/monitoring and the logistic model for explainable reporting.
+
 
 ---
 
 ## 3. Background
 
-### 3.1 Context: why possession-level modelling matters
-The NRLW has grown rapidly since 2018. More teams and matches, deeper rosters, and evolving tactics make simple totals hard to compare across time. Analysts need context-adjusted measures that account for **where** a set starts on the field and **when** it occurs.
+**Objectiveo**  
+Turn our set-level dataset into a working modelling example that predicts **far-set probability from pre-set context** — no peeking at events inside the set we’re predicting.
 
-Public work on the women’s game covers physical demands, injury, and movement patterns. That is valuable, but it does not tell you if a team turned a poor start into strong field position, or whether one club reliably outperforms others from the same context. The gap is on **tactical, possession-level** analysis.
+**Why this matters — why the client should care**  
+- The NRLW has expanded since 2018. Raw metrics (totals/averages) aren’t comparable across seasons.  
+- Coaches ask context questions: “From our own 20, what should we expect?” “Did we underperform relative to where we started?”  
+- A **probability at set start** answers those questions in plain language and works for post-match review, team benchmarking and league-wide monitoring.
 
-### 3.2 Our contribution
-Week-5 delivered a set-level data product that:
-- normalises direction so metres are comparable,
-- tags the **start zone** of each set,
-- aggregates events to 1 row per set with outcomes like `maxAdvance_set`.
+**Prior work — what exists and what’s missing**  
+Published work on women’s rugby league is strong on **physical demands**, **injury** and **movement**. Possession-level **tactical** models — especially for the NRLW — are limited. Our contribution is to (1) provide a clean, **set-level** dataset and (2) demonstrate a **leakage-safe** modelling approach that turns context into expected outcomes coaches can act on.
 
-This report uses that product to build a **leakage-safe** model of far-set probability. The model does not peek inside the set it is predicting. That keeps it realistic for pre-match scenarios and instant post-set expectations.
+**Our framing choice — fixed 2018 benchmark**  
+We define “far” using a **fixed bar** (e.g., the 2018 80th percentile for own-half sets). Keeping the bar fixed lets us see genuine improvement or decline across eras, instead of moving the goalposts each season.
 
-### 3.3 Why a fixed 2018 benchmark
-A moving threshold would hide improvement. A fixed bar set in 2018 (for example the 80th percentile in own-half sets) gives a stable yardstick. If the league gets better, more sets will clear the bar from the same starts. If it stalls, the share stays flat or falls.
 
 ---
 
-## 4. Overview: descriptive statistics, insights, and plan
+## 4. Overview
 
 ### 4.1 Descriptive statistics (from **Data Group 1’s product**)
 - **Unit:** 1 row = 1 team possession (set of six).  
@@ -77,7 +78,7 @@ A moving threshold would hide improvement. A fixed bar set in 2018 (for example 
 - **Zones:** each set has a start zone (fine) and a coarse zone `HalfTag ∈ {Own, Mid, Opp}`.  
 - **Far-set bar:** fixed to the **2018** reference (example used in our Week-5 docs: ~P80 ≈ 141 m for own-half context).
 
-### 4.2 General insights to guide modelling
+### 4.2 General insights
 - The distribution of `maxAdvance_set` is right-skewed. Most sets gain modest metres; a minority push very far.  
 - Start zone is the dominant context. Opponent-half starts are much more likely to be far sets than own-half starts.  
 - Season effects are present. Later seasons show a small uplift consistent with improving play and expansion.
@@ -110,15 +111,14 @@ A moving threshold would hide improvement. A fixed bar set in 2018 (for example 
 
 ## 6. The models used
 
-We use four complementary models to answer the same question:  
-**“From start context, what is the chance this set is a far set?”**
+We use four  models to answer the research question:  
 
-1) **Linear Probability Model (LPM, OLS)**  
+1) **Linear Probability Model**  
    - **What it tests:** a simple linear link between context dummies and the probability of a far set.  
    - **Why include it:** sanity baseline for direction and sign of effects; easy to communicate.  
    - **How we use it:** fit on training seasons with zone-only and with full pre-set features; compare fitted probabilities to observed rates by bins.
 
-2) **Regularised Logistic Regression (GLM)**  
+2) **Regularised Logistic Regression**  
    - **What it tests:** a log-odds link with L2 regularisation to control overfitting as categories expand.  
    - **Why include it:** interpretable and well-calibrated in many tabular problems; produces odds ratios that coaches understand.  
    - **How we use it:** train with grouped cross-validation by season; report coefficients, odds ratios, and a reliability plot.
@@ -155,13 +155,8 @@ All four models use the same features and the same time-aware split so the compa
 
 ## 8. Findings
 
-> Replace placeholders with your actual results when you run the workflow.
+> INSERT FINDINGS HERE WHEN WE ACTUALLY GOT FINDINGS
 
-- **Field position dominates.** The coarse zone feature explains a large share of variance.  
-- **Season adds uplift.** Later seasons show higher far-set odds from similar starts, consistent with league improvement.  
-- **Team matters.** Even after controlling for start context, some teams outperform expectation consistently.  
-- **Model ranking vs explanation.** Boosting ranks best; logistic explains best.  
-- **Calibration.** Calibrated boosting yields probabilities that match observed rates more closely than uncalibrated models.
 
 ---
 
@@ -182,16 +177,24 @@ All four models use the same features and the same time-aware split so the compa
 
 ## 10. Conclusion
 
-**Answer to the research question:**  
-Yes. Using only pre-set context, we can estimate the chance that a set will be a far set with useful accuracy. **Field position** is the main driver, and **season** and **team** effects add meaningful signal. In practice, a **calibrated gradient-boosting model** provides the strongest ranking of likely far sets, while a **regularised logistic regression** explains the “why” in plain language. Together they deliver context-adjusted, reliable probabilities that teams can use to review matches, benchmark performance, and track how the NRLW evolves over time.
+Using only pre-set context, we can estimate the chance that a set will be a far set with useful accuracy. **Field position** is the main driver, and **season** and **team** effects add meaningful signal. In practice, a **calibrated gradient-boosting model** provides the strongest ranking of likely far sets, while a **regularised logistic regression** explains the “why” in plain language. Together they deliver context-adjusted, reliable probabilities that teams can use to review matches, benchmark performance, and track how the NRLW evolves over time.
 
 ---
 
 ## 11. Appendix
 
-### Appendix A — Reproducibility steps (no code here)
+### Appendix A — Reproducibility steps 
 
-1. Confirm `data.csv` is present and the composite key `(gameid, Teamname, Seasonid, halfNumber, setcount)` is unique.  
-2. Set the **2018** far-set threshold in a consistent context (own-half recommended).  
-3. Create `far_set` by comparing `maxAdvance_set` to the fixed threshold.  
+WRITE HERE HOW TO REPRODUCE THE CODE IN STEPS PLUS ALSO ADD THE CODE WE USED TO GET FINDINGS HERE AND ALSO SOME PLOTS
+
+### Appendix B — Contributers
+ADD ALL that info here later, who did what etc
+
+### Appendix C — References
+- Repository: *data3001-data NRLW — Change in NRLW Game Patterns (2018 to Present).*
+  
+- Gabbett, T. (2007). Injuries in a national women’s rugby league tournament.  
+- Newans, T. et al. (2021). Match demands of female rugby league players.  
+- King, D. et al. (2010, 2022). Concussion and injury in rugby league.  
+
 
