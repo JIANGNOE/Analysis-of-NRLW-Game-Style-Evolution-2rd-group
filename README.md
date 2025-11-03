@@ -1,6 +1,5 @@
 # DATA3001 NRLW Modelling — Group 1
 **Title:** Predicting Far Sets in the NRLW from Pre-Set Context  
-**Date:** 3 November 2025  
 **Dataset:** `data.csv` (duplicate of `product/sets.csv`) — built from **Data Group 1’s product** 
 
 ---
