@@ -34,7 +34,7 @@ This modelling task is directly grounded in how coaches and analysts review perf
 
 “Are some teams consistently outperforming others in similar contexts?”
 
-Understanding this relationship is important because the NRLW has undergone rapid expansion since 2018, with tactical standards and playing styles evolving alongside structural changes. Traditional raw metrics (e.g., average metres per game) fail to account for differences in possession context, making fair comparisons difficult across teams, matches, and seasons. Our approach resolves this by producing context-adjusted far-set probabilities, enabling clearer performance benchmarking across eras.
+Understanding this relationship is important because the NRLW has undergone rapid expansion since 2018, with tactical standards and playing styles evolving alongside structural changes. Traditional raw metrics (e.g. average metres per game) fail to account for differences in possession context, making fair comparisons difficult across teams, matches, and seasons. Our approach resolves this by producing context-adjusted far-set probabilities, enabling clearer performance benchmarking across eras.
 
 In summary, this project demonstrates how Data Group 1’s event-to-context product can support practical, interpretable, and evolution-aware performance modelling at the possession level in the NRLW.
 
