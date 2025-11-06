@@ -21,11 +21,22 @@
 
 ## 1. Introduction
 
-This project shows how **Data Group 1’s product** enables useful, leakage-safe modelling for the NRLW at the possession level. We focus on one practical question that analysts and coaches actually ask:
+This project examines how pre-set contextual factors influence attacking outcomes in the National Rugby League Women’s (NRLW). Specifically, we focus on the question:
 
 > **Research question:** Given what we know at the **start** of a set, what is the chance this possession will be a **far set**?
 
-A “far set” is a set whose largest forward gain meets or exceeds a fixed metre benchmark first measured in 2018. Keeping the benchmark fixed lets us compare seasons and teams on the same scale.
+A far set is defined as a possession where the maximum forward gain meets or exceeds a fixed distance benchmark first measured in the 2018 season. Keeping this benchmark fixed allows us to compare teams and seasons on a consistent scale, avoiding moving-goalpost effects as the league expands and evolves.
+This modelling task is directly grounded in how coaches and analysts review performance. By predicting far set likelihood using only information available before the set begins (season, starting field zone, half, team identity), we ensure a leakage-safe model that reflects real decision making conditions during games. Such a model provides context adjusted expectations for possession quality, helping answer practical questions such as:
+
+“Given we started this set in our own half, did we perform above or below expectation?”
+
+“Is our improvement over seasons genuine, or just driven by better field position?”
+
+“Are some teams consistently outperforming others in similar contexts?”
+
+Understanding this relationship is important because the NRLW has undergone rapid expansion since 2018, with tactical standards and playing styles evolving alongside structural changes. Traditional raw metrics (e.g., average metres per game) fail to account for differences in possession context, making fair comparisons difficult across teams, matches, and seasons. Our approach resolves this by producing context-adjusted far-set probabilities, enabling clearer performance benchmarking across eras.
+
+In summary, this project demonstrates how Data Group 1’s event-to-context product can support practical, interpretable, and evolution-aware performance modelling at the possession level in the NRLW.
 
 ---
 
