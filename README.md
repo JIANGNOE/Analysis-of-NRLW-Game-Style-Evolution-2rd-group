@@ -1,11 +1,9 @@
 # DATA3001 NRLW Modelling — Group 1
+
+![Dashboard Preview](images/dashboard.jpeg)
+
 **Title:** Predicting Far Sets in the NRLW from Pre-Set Context  
 **Dataset:** `data.csv` (duplicate of `product/sets.csv`) — built from **Data Group 1’s product** 
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/23ffece1-73ac-424a-90e8-5d2aa49f2460" alt="download" width="1000">
-</p>
-
 
 
 ## Table of contents
