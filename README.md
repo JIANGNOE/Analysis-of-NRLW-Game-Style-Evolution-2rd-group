@@ -11,7 +11,7 @@
 - [1. Introduction](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#1-introduction)
 - [2. Executive summary](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#2-executive-summary)
 - [3. Background](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#3-background)
-- [4. Overview: descriptive statistics, insights, and plan](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#4-overview-descriptive-statistics-insights-and-plan)
+- [4. Overview: descriptive statistics, insights, and plan](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#4-overview)
 - [5.EDA](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#5-eda-visualisation-and-initial-insights)
 - [6. Feature engineering](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#6-feature-engineering)
 - [7. The models used](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#7-the-models-used)
