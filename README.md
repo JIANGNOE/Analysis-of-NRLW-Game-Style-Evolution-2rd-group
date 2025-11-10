@@ -12,13 +12,14 @@
 - [2. Executive summary](#2-executive-summary)
 - [3. Background](#3-background)
 - [4. Overview: descriptive statistics, insights, and plan](#4-overview-descriptive-statistics-insights-and-plan)
-- [5. Feature engineering](#5-feature-engineering)
-- [6. The models used](#6-the-models-used)
-- [7. Model comparison](#7-model-comparison)
-- [8. Findings](#8-findings)
-- [9. Recommendations](#9-recommendations)
-- [10. Conclusion](#10-conclusion)
-- [11. Appendix](#11-appendix)
+- [5. EDA](#5-overview-descriptive-statistics-insights-and-plan)
+- [6. Feature engineering](#5-feature-engineering)
+- [7. The models used](#6-the-models-used)
+- [8. Model comparison](#7-model-comparison)
+- [9. Findings](#8-findings)
+- [10. Recommendations](#9-recommendations)
+- [11. Conclusion](#10-conclusion)
+- [12. Appendix](#11-appendix)
 
 ---
 
@@ -105,7 +106,11 @@ We define “far” using a **fixed bar** (e.g., the 2018 80th percentile for ow
 
 ---
 
-## 5. Feature engineering
+## 5. EDA
+
+
+
+## 6. Feature engineering
 
 - **Target (FarSet).**  
   Compute the 2018 threshold in a consistent context (we use own-half to set the bar). Label each set `far_set = 1` if `maxAdvance_set ≥ threshold`, else `0`. The same threshold is used for all seasons.
@@ -122,7 +127,7 @@ We define “far” using a **fixed bar** (e.g., the 2018 80th percentile for ow
 
 ---
 
-## 6. The models used
+## 7. The models used
 
 We use four  models to answer the research question:  
 
@@ -150,15 +155,15 @@ All four models use the same features and the same time-aware split so the compa
 
 ---
 
-## 7. Model comparison
+## 8. Model comparison
 
-### 7.1 Criteria
+### 8.1 Criteria
 - **Primary:** AUROC (ranking), AUPRC if the positive class is rare.  
 - **Secondary:** accuracy, precision, recall, F1 at a 0.5 threshold.  
 - **Calibration:** Brier score and a reliability plot.  
 - **Practicality:** interpretability, stability across seasons, and ease of deployment.
 
-### 7.2 Expected outcomes
+### 8.2 Expected outcomes
 - **Zone-only LPM and logistic** set the floor.  
 - **Full logistic** improves discrimination and remains interpretable.  
 - **Random Forest and Gradient Boosting** often lift AUROC further; boosting plus calibration tends to give the best probability quality.  
@@ -166,21 +171,21 @@ All four models use the same features and the same time-aware split so the compa
 
 ---
 
-## 8. Findings
+## 9. Findings
 
 > INSERT FINDINGS HERE WHEN WE ACTUALLY GOT FINDINGS
 
 
 ---
 
-## 9. Recommendations
+## 10. Recommendations
 
-### 9.1 For coaches and analysts
+### 10.1 For coaches and analysts
 1. **Benchmark with context.** After each match, compare actual far-set rate with the model’s expected rate given start contexts. Review high-expectation failures and low-expectation successes.  
 2. **Dashboards.** Track predicted vs actual by **team × zone × season**. Use traffic-light colouring to surface under- and over-performance.  
 3. **Drift monitoring.** Keep the 2018 bar fixed. If expected probabilities climb league-wide, tactics or execution are improving. If they fall, look at rule changes, schedule, or weather patterns.
 
-### 9.2 For future analysts
+### 10.2 For future analysts
 - Prefer **time-aware** splits; random splits inflate scores in evolving competitions.  
 - Run **threshold sensitivity** checks (for example P75 and P85).  
 - Consider **opponent strength** and **venue** if those are reliably available pre-set.  
@@ -188,13 +193,13 @@ All four models use the same features and the same time-aware split so the compa
 
 ---
 
-## 10. Conclusion
+## 11. Conclusion
 
 Using only pre-set context, we can estimate the chance that a set will be a far set with useful accuracy. **Field position** is the main driver, and **season** and **team** effects add meaningful signal. In practice, a **calibrated gradient-boosting model** provides the strongest ranking of likely far sets, while a **regularised logistic regression** explains the “why” in plain language. Together they deliver context-adjusted, reliable probabilities that teams can use to review matches, benchmark performance, and track how the NRLW evolves over time.
 
 ---
 
-## 11. Appendix
+## 12. Appendix
 
 ### Appendix A — Reproducibility steps 
 
