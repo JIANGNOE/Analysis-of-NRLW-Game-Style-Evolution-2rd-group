@@ -8,18 +8,18 @@
 
 
 ## Table of contents
-- [1. Introduction](#1-introduction)
-- [2. Executive summary](#2-executive-summary)
-- [3. Background](#3-background)
-- [4. Overview: descriptive statistics, insights, and plan](#4-overview-descriptive-statistics-insights-and-plan)
+- [1. Introduction](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#1-introduction)
+- [2. Executive summary](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#2-executive-summary)
+- [3. Background](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#3-background)
+- [4. Overview: descriptive statistics, insights, and plan](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#4-overview-descriptive-statistics-insights-and-plan)
 - [5.EDA](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#5-eda)
-- [6. Feature engineering](#5-feature-engineering)
-- [7. The models used](#6-the-models-used)
-- [8. Model comparison](#7-model-comparison)
-- [9. Findings](#8-findings)
-- [10. Recommendations](#9-recommendations)
-- [11. Conclusion](#10-conclusion)
-- [12. Appendix](#11-appendix)
+- [6. Feature engineering](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#6-feature-engineering)
+- [7. The models used](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#7-the-models-used)
+- [8. Model comparison](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#7-model-comparison)
+- [9. Findings](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#8-findings)
+- [10. Recommendations](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#9-recommendations)
+- [11. Conclusion](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#10-conclusion)
+- [12. Appendix](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#11-appendix)
 
 ---
 
