@@ -1,10 +1,10 @@
-# DATA3001 NRLW Modelling — Group 1
+# DATA3001 NRLW Modelling - Group 1
 
 <img src="images.jpeg" alt="Dashboard Preview" width="1000">
 
 
 **Title:** Predicting Far Sets in the NRLW from Pre-Set Context  
-**Dataset:** `data.csv` (duplicate of `product/sets.csv`) — built from **Data Group 1’s product** 
+**Dataset:** `data.csv` (duplicate of `product/sets.csv`) - built from **Data Group 1’s product** 
 
 
 ## Table of contents
@@ -96,7 +96,7 @@ Crucially, our models only use predictors that a coach would know **before** the
 - **Starting Zone:** Where on the field the set starts (e.g., deep in their own half, midfield).  
 - **Half:** First or second half.
 
-This approach prevents **data leakage** — we aren’t using information from within the set (like number of passes or tackle breaks) to predict the outcome. This keeps the model realistic for setting **real-world expectations**, helping answer questions like:
+This approach prevents **data leakage**, we are not using information from within the set (like number of passes or tackle breaks) to predict the outcome. This keeps the model realistic for setting **real-world expectations**, helping answer questions like:
 
 > “We started this set deep in our territory. Did we perform above or below what was expected for that situation?”
 
@@ -112,7 +112,7 @@ Using our fixed benchmark of **131.8 metres**, we found the league-wide average 
 However, this average hides key patterns:
 
 - **Imbalance:**  
-  The target variable `farSet_fixed` is imbalanced — 80% of sets are “failures” (0) and only 20% are “successes” (1). This will influence our model choice and evaluation metrics.
+  The target variable `farSet_fixed` is imbalanced, 80% of sets are “failures” (0) and only 20% are “successes”. This will influence our model choice and evaluation metrics.
 
 - **League Evolution:**  
   Attacking success has increased over time, from **16.4% in 2018** to **21.2% in 2024**, suggesting genuine improvement in league quality.
@@ -123,18 +123,16 @@ However, this average hides key patterns:
 - **Team Skill:**  
   Teams vary substantially. The **Zebras** have the best historical performance (**23.5% far-set rate**), while the **Gliders** have the lowest (**17.7%**).
 
----
-
 ## Modelling Plan
 
-We used a **time-aware split** to simulate real forecasting — no shuffling across seasons.
+We used a **time-aware split** to simulate real forecasting, no shuffling across seasons.
 
 - **Training Set:** 2018–2024 data (**19,550 possessions**)  
 - **Test Set (Holdout):** Entire 2025 season (**9,441 possessions**)
 
 This ensures the model learns from history and is evaluated on how well it predicts the *future* (2025 season).
 
-Because our data is imbalanced (80/20), simple accuracy is misleading — a model predicting “0” every time would be **80% accurate but useless**.  
+Because our data is imbalanced (80/20), simple accuracy is misleading, a model predicting “0” every time would be **80% accurate but useless**.  
 Instead, our primary evaluation metric is **AUC (Area Under the ROC Curve)**, which measures how well the model distinguishes between “far” and “normal” sets.
 
 We compared **four classification models**:
@@ -157,8 +155,6 @@ We compared **four classification models**:
 
 Before modelling, we explored how each predictor (Zone, Season, Team, Half) relates to the outcome (*Far Set Rate*).
 
----
-
 ## 5.1 Far-Set Rate by Starting Zone
 
 | setZone | sets | far_rate |
@@ -173,13 +169,10 @@ Before modelling, we explored how each predictor (Zone, Season, Team, Half) rela
 | YL | 3410 | 0.191496 |
 | YR | 3550 | 0.184507 |
 
-
-
 **Insight:**  
 Starting position strongly affects success. Sets starting deep in a team’s half (like `YR`) have lower success rates (18.4%) compared to those near the opposition’s line (`CL`) at 21.2%.  
 This confirms that `setZone` is an essential predictor.
 
----
 
 ## 5.2 Far-Set Rate by Season (League Evolution)
 
@@ -194,13 +187,9 @@ This confirms that `setZone` is an essential predictor.
 | 2024 | 6468 | 0.211812 |
 | 2025 | 9441 | 0.192988 |
 
-
-
 **Insight:**  
 There’s a clear upward trend in attacking performance from 2018 to 2024, reflecting improved tactics, coaching, and athleticism.  
 The slight dip in 2025 (our test set) could be due to league expansion or natural variation.
-
----
 
 ## 5.3 Far-Set Rate by Team
 
@@ -223,8 +212,6 @@ The slight dip in 2025 (our test set) could be due to league expansion or natura
 **Insight:**  
 Team identity clearly influences outcomes. The **Zebras** outperform all others (23.5%), while the **Gliders** lag behind (17.7%). This justifies including `Teamname` in the model.
 
----
-
 ## 5.4 Far-Set Rate by Half-Tag
 
 | HalfTag | sets | far_rate |
@@ -235,13 +222,14 @@ Team identity clearly influences outcomes. The **Zebras** outperform all others 
 
 
 **Insight:**  
-The game half has a weak relationship with success. Far-set rates are similar across halves — 20.9% (`Mid`), 20.4% (`Opp`), and 19.0% (`Own`).  
+The game half has a weak relationship with success. Far-set rates are similar across halves, 20.9% (`Mid`), 20.4% (`Opp`), and 19.0% (`Own`).  
 We’ll include it for completeness, but it’s unlikely to be a major driver.
 
+---
 
 # 6. Models: Design and Results
 
-To answer our research question, we trained several classification models. The goal was not just to find the most accurate model, but the one that could best **generalize to unseen data**.  
+To answer our research question, we trained several classification models. The goal was not just to find the most accurate model, but the one that could best **generalise to unseen data**.  
 That’s why we trained on **2018–2024** and tested on the **2025** season.
 
 Our primary evaluation metric was **AUC (Area Under the Curve)**, which measures how well a model distinguishes between a “far set” (1) and a “normal set” (0):
@@ -251,7 +239,6 @@ Our primary evaluation metric was **AUC (Area Under the Curve)**, which measures
 
 All models used the same four features: `Seasonid`, `Teamname`, `setZone`, and `HalfTag`.
 
----
 
 ## 6.1 Model 1: Logistic Regression (Balanced)
 
@@ -265,8 +252,6 @@ We used `class_weight='balanced'` so the model pays extra attention to the rare 
 This baseline achieved a **Test AUC of 0.525**.  
 While modest, it set the benchmark for all other models. It’s slightly better than random guessing, showing a weak but real signal.
 
----
-
 ## 6.2 Model 2: Tuned Logistic Regression (CV)
 
 **What is it?**  
@@ -277,9 +262,7 @@ To see if optimization could improve the baseline without adding complexity.
 
 **Results:**  
 The tuned version scored **Test AUC = 0.522**, slightly worse than the simple baseline.  
-This suggests **overfitting** — the tuning improved performance on old data but didn’t generalize to 2025.
-
----
+This suggests **overfitting**, the tuning improved performance on old data but didn’t generalize to 2025.
 
 ## 6.3 Model 3: Random Forest
 
@@ -292,8 +275,6 @@ Random Forests can capture **non-linear relationships** (e.g., “Zone YR perfor
 **Results:**  
 The model scored **Test AUC = 0.518**, showing **poor generalization**.  
 It fit the training data too well, learning noise and season-specific quirks that didn’t carry over to 2025.
-
----
 
 ## 6.4 Model 4: Gradient Boosting (HistGradientBoosting)
 
@@ -322,25 +303,17 @@ Best results per metric are in **bold**.
 | Gradient Boosting (Standard) | 0.519 | 0.202 | 0.160 | 0.433 |
 | Gradient Boosting (Hist) | 0.521 | **0.203** | 0.160 | 0.433 |
 
-*(Data from DATA3001_MODELLING_CODE.ipynb, df_results table)*
 
----
-
-### And the Winner Is...
-
-**Logistic Regression (Balanced)** is the selected model.
-
-Despite its simplicity, it outperformed all complex alternatives.  
+As seen from the table, **Logistic Regression (Balanced)** is the selected model. Despite its simplicity, it outperformed all complex alternatives.  
 The Random Forest and Gradient Boosting models **overfit** and failed to generalize to the 2025 data.  
 The balanced logistic model was **most stable and reliable**.
 
-However, its **AUC = 0.525** is still very low — only 2.5% better than random guessing.  
+However, its **AUC = 0.525** is still very low, only 2.5% better than random guessing.  
 This means that the pre-set features (Season, Team, Zone, Half) alone have **weak predictive power**.
 
 In other words, knowing this context isn’t enough to accurately predict success.  
 The real drivers of far sets are likely **in-set execution factors**, which were intentionally excluded.
 
----
 
 ### [INSERT FIGURES HERE]
 
@@ -357,8 +330,6 @@ The real drivers of far sets are likely **in-set execution factors**, which were
 
 Since we selected the **Logistic Regression (Balanced)** model, we can interpret its internal coefficients to understand what it learned.
 
----
-
 ## 8.1 Most Important Features
 
 We used two methods to find the most influential features:
@@ -372,14 +343,10 @@ We used two methods to find the most influential features:
   - Odds ratio **> 1:** Increases far-set likelihood  
   - Odds ratio **< 1:** Decreases far-set likelihood
 
----
-
 ### [INSERT FIGURES HERE]
 
 - Permutation Importance: `fig_perm_importance_logistic.png`  
 - Odds Ratios: `fig_odds_ratios_top20.png`
-
----
 
 ### Key Insights
 
@@ -390,9 +357,7 @@ We used two methods to find the most influential features:
   Variables like `Teamname_Devils` or `Teamname_Zebras` strongly influenced predictions.
 
 - **Broad Factors Don’t:**  
-  Variables like `Seasonid` and `HalfTag` contributed very little — the model found more signal in team and zone context.
-
----
+  Variables like `Seasonid` and `HalfTag` contributed very little, the model found more signal in team and zone context.
 
 ## 8.2 Omitted Variables and Potential Bias
 
@@ -408,15 +373,13 @@ We deliberately **omitted all in-set variables** such as:
 - Opponent defensive quality  
 
 We did this to avoid **data leakage** and focus on pre-set context.  
-However, this creates **Omitted Variable Bias** — when unobserved variables distort the apparent effect of those included.
-
----
+However, this creates **Omitted Variable Bias**, when unobserved variables distort the apparent effect of those included.
 
 ### Example
 
 The model shows that `Teamname_Zebras` has a high positive effect.  
 Does this mean the **Zebras** are inherently better?  
-No — it’s likely because:
+No, it’s likely because:
 
 - They have more **skilled players**, or  
 - They have a **better coach**
@@ -424,12 +387,10 @@ No — it’s likely because:
 Both are **omitted variables**.  
 Since the model can’t see these true causes, it assigns credit to `Teamname_Zebras` instead.
 
----
-
 ### Why Random Assignment Helps
 
 In theory, randomizing player assignment across teams would break this link.  
-If all players were reshuffled each season, `Teamname` would no longer capture player skill or coaching quality — its effect would drop to zero.  
+If all players were reshuffled each season, `Teamname` would no longer capture player skill or coaching quality, its effect would drop to zero.  
 That’s what would remove the bias.
 
 But in real-world sports data, **random assignment isn’t possible**.  
@@ -476,7 +437,7 @@ This report set out to answer a practical coaching question:
 
 To do this, we established a fixed performance benchmark:  
 A “far set” was defined as any possession gaining over **131.8 metres** (the 80th percentile of own-half gains in 2018).  
-We trained four different machine learning models — **Logistic Regression**, **Tuned Logistic Regression**, **Random Forest**, and **HistGradient Boosting** — on data from **2018–2024**, holding back the entire **2025 season** as a true “out-of-time” test set.
+We trained four different machine learning models, **Logistic Regression**, **Tuned Logistic Regression**, **Random Forest**, and **HistGradient Boosting** — on data from **2018–2024**, holding back the entire **2025 season** as a true “out-of-time” test set.
 
 The results were conclusive.  
 The more complex models (Random Forest, Gradient Boosting) **overfit** the training data and failed to generalize to the 2025 season.  
