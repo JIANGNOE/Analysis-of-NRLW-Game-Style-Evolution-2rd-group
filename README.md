@@ -47,12 +47,12 @@ Understanding this relationship is important because the NRLW has undergone **ra
 
 ## 2. Executive summary
 
-This report details the process of building and evaluating four machine learning models to predict the probability of a **"far set"** (a successful attacking possession > 131.8m). The models use only **pre-set contextual data** from the **NRLW 2018–2025 seasons**.
+This report details the process of building and evaluating a set of machine learning models to predict the probability of a "far set" (a possession gaining ≥131.8m). The analysis uses only pre-set contextual data from the NRLW 2018–2025 seasons, ensuring the prediction reflects information actually available at the moment a set begins.
 
-The analysis used a **time-aware split**, training on data from **2018–2024** and holding out the entire **2025 season** as the unseen test set. We compared four classification models:
+To mimic real-world forecasting, we used a time-aware train–test split, training models on 2018–2024 data and evaluating performance on the unseen 2025 season. This prevents information leakage and tests whether learned patterns generalise to a future competition environment.
 
 - Baseline Logistic Regression (with balanced classes)
-- Tuned Logistic Regression (with cross-validation)
+- Regularised GLM (Elastic-Net Logistic Regression)
 - Random Forest
 - Gradient Boosting Classifier
 - HistGradientBoosting Classifier
@@ -62,16 +62,21 @@ The analysis used a **time-aware split**, training on data from **2018–2024** 
 ### Main Findings
 
 **Best Model:**  
-The **baseline (balanced) Logistic Regression** was the best-performing model on the 2025 test set, achieving a **test AUC of 0.525**. This indicates that the more complex tree-based models were unable to find significant predictive patterns and did not generalize well to the future season.
+The **Regularised GLM** achieved the best balance of generalisation, stability, and interpretability on the 2025 test set. More complex tree-based models did not outperform it and showed signs of overfitting, capturing noise from earlier seasons that did not hold in the 2025 data.
 
-**Limited Predictive Power:**  
-An AUC of **0.525** suggests that the pre-set factors alone (Season, Team, Zone, Half) have very limited ability to predict whether a set will be successful. The model is only slightly better than a random 50/50 guess.
+**Predictive Strength:**  
+The selected model achieved a test AUC of **~0.53**, which is only slightly above random chance (0.50). This indicates that pre-set context alone (Team, Season, Zone, Half) has weak predictive power for far-set outcomes. The result is consistent across all tested models.
 
 **Key Drivers:**  
-The most important predictors identified by the model were specific **starting zones** (like `setZone_GC`) and specific **teams** (like `Teamname_Devils` and `Teamname_Zebras`), rather than broader factors like the game half or season.
+Model coefficient and permutation importance analyses show:
+
+- Starting zone is the strongest contextual predictor of far-set likelihood.
+- Team identity also contributes, reflecting tactical structure and roster effects.
+- Season effects trend upward, suggesting genuine league improvement over time, independent of field position.
+- Half has minimal independent impact.
 
 **Practical Implication:**  
-The low predictive power of context strongly implies that **in-set execution** (factors like passes, kicks, player skill, and errors, which were intentionally excluded from this model's predictors) are the true drivers of attacking success.
+The limited predictive power of context implies that what happens during the set—execution, decision-making, play selection, ruck tempo, athleticism is the primary determinant of attacking success. However, the model is still valuable as a context-adjusted expectation benchmark, allowing coaches and analysts to evaluate whether a team is performing above or below expectation given the situation.
 
 
 ---
