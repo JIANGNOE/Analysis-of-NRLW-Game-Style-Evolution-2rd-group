@@ -76,7 +76,7 @@ Model coefficient and permutation importance analyses show:
 - Half has minimal independent impact.
 
 **Practical Implication:**  
-The limited predictive power of context implies that what happens during the set—execution, decision-making, play selection, ruck tempo, athleticism is the primary determinant of attacking success. However, the model is still valuable as a context-adjusted expectation benchmark, allowing coaches and analysts to evaluate whether a team is performing above or below expectation given the situation.
+The limited predictive power of context implies that what happens during the set execution, decision-making, play selection, ruck tempo, athleticism is the primary determinant of attacking success. However, the model is still valuable as a context-adjusted expectation benchmark, allowing coaches and analysts to evaluate whether a team is performing above or below expectation given the situation.
 
 
 ---
