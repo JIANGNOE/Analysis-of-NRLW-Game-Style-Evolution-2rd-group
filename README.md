@@ -25,185 +25,478 @@
 
 ## 1. Introduction
 
-This project examines how pre-set contextual factors influence attacking outcomes in the National Rugby League Women’s (NRLW). Specifically, we focus on the question:
+This project examines how pre-set contextual factors influence attacking outcomes in the National Rugby League Women’s (NRLW).
 
-> **Research question:** Given what we know at the **start** of a set, what is the chance this possession will be a **far set**?
+Our research question is:
 
-A far set is defined as a possession where the maximum forward gain meets or exceeds a fixed distance benchmark first measured in the 2018 season. Keeping this benchmark fixed allows us to compare teams and seasons on a consistent scale, avoiding moving-goalpost effects as the league expands and evolves.
-This modelling task is directly grounded in how coaches and analysts review performance. By predicting far set likelihood using only information available before the set begins (season, starting field zone, half, team identity), we ensure a leakage-safe model that reflects real decision making conditions during games. Such a model provides context adjusted expectations for possession quality, helping answer practical questions such as:
+> **"Given what we know at the start of a set (season, team, starting zone, half), what is the probability this possession will be a far set?"**
 
-“Given we started this set in our own half, did we perform above or below expectation?”
+A **"far set"** is defined as a possession where the maximum forward gain meets or exceeds a fixed distance benchmark. For this report, that benchmark is **131.8 metres**, calculated as the **80th percentile** of gains from own-half starts in the 2018 season. Keeping this benchmark fixed allows us to compare teams and seasons on a consistent scale, avoiding "moving goalposts" as the league expands and evolves.
 
-“Is our improvement over seasons genuine, or just driven by better field position?”
+This modelling task is directly grounded in how coaches and analysts review performance. By predicting the likelihood of a "far set" using only information available before the set begins (season, starting field zone, half, team identity), we ensure a **"leakage-safe"** model that reflects real decision-making conditions during games.
 
-“Are some teams consistently outperforming others in similar contexts?”
+Such a model provides context-adjusted expectations for possession quality, helping answer practical questions such as:
 
-Understanding this relationship is important because the NRLW has undergone rapid expansion since 2018, with tactical standards and playing styles evolving alongside structural changes. Traditional raw metrics (e.g. average metres per game) fail to account for differences in possession context, making fair comparisons difficult across teams, matches, and seasons. Our approach resolves this by producing context-adjusted far-set probabilities, enabling clearer performance benchmarking across eras.
+- “Given we started this set in our own half, did we perform above or below expectation?”
+- “Is our improvement over seasons genuine, or just driven by better field position?”
+- “Are some teams consistently outperforming others in similar contexts?”
 
-In summary, this project demonstrates how Data Group 1’s event-to-context product can support practical, interpretable, and evolution-aware performance modelling at the possession level in the NRLW.
+Understanding this relationship is important because the NRLW has undergone **rapid expansion** since 2018. Traditional raw metrics (like average metres per game) fail to account for differences in possession context, making fair comparisons difficult. Our approach resolves this by producing **context-adjusted probabilities**, enabling clearer performance benchmarking across different eras.
+
 
 ---
 
 ## 2. Executive summary
 
-**What we asked:**  
-Given only what we know at the **start** of a set (season, team, half, starting zone), what is the **chance** this possession will be a **far set**?
+This report details the process of building and evaluating four machine learning models to predict the probability of a **"far set"** (a successful attacking possession > 131.8m). The models use only **pre-set contextual data** from the **NRLW 2018–2025 seasons**.
 
-**What we did:**  
-We built a leakage-safe, **context-adjusted** probability using four simple models (Linear Probability Model, Regularised Logistic Regression, Random Forest, Gradient Boosting with calibration). We trained on earlier seasons and tested on later seasons to respect how the NRLW has evolved.
+The analysis used a **time-aware split**, training on data from **2018–2024** and holding out the entire **2025 season** as the unseen test set. We compared four classification models:
 
-**What this gives you:**  
-- A fair benchmark that controls for **where** sets start and **when** they occur.  
-- Clear team and season comparisons that are not biased by field position.  
-- A simple way to spot **over-performance** and **under-performance** after each game.
+- Baseline Logistic Regression (with balanced classes)
+- Tuned Logistic Regression (with cross-validation)
+- Random Forest
+- Gradient Boosting Classifier
+- HistGradientBoosting Classifier
 
-**Bottom line:**  
-Yes — pre-set context is enough to estimate far-set likelihood with useful accuracy. Start zone drives most of the signal; team and season add meaningful lift. Use the calibrated model for ranking/monitoring and the logistic model for explainable reporting.
+---
+
+### Main Findings
+
+**Best Model:**  
+The **baseline (balanced) Logistic Regression** was the best-performing model on the 2025 test set, achieving a **test AUC of 0.525**. This indicates that the more complex tree-based models were unable to find significant predictive patterns and did not generalize well to the future season.
+
+**Limited Predictive Power:**  
+An AUC of **0.525** suggests that the pre-set factors alone (Season, Team, Zone, Half) have very limited ability to predict whether a set will be successful. The model is only slightly better than a random 50/50 guess.
+
+**Key Drivers:**  
+The most important predictors identified by the model were specific **starting zones** (like `setZone_GC`) and specific **teams** (like `Teamname_Devils` and `Teamname_Zebras`), rather than broader factors like the game half or season.
+
+**Practical Implication:**  
+The low predictive power of context strongly implies that **in-set execution** (factors like passes, kicks, player skill, and errors, which were intentionally excluded from this model's predictors) are the true drivers of attacking success.
 
 
 ---
 
-## 3. Background
+# 3. Background
 
-**Objectiveo**  
-Turn our set-level dataset into a working modelling example that predicts **far-set probability from pre-set context** — no peeking at events inside the set we’re predicting.
+This report is built to answer a specific, practical question for coaches and analysts:
 
-**Why this matters — why the client should care**  
-- The NRLW has expanded since 2018. Raw metrics (totals/averages) aren’t comparable across seasons.  
-- Coaches ask context questions: “From our own 20, what should we expect?” “Did we underperform relative to where we started?”  
-- A **probability at set start** answers those questions in plain language and works for post-match review, team benchmarking and league-wide monitoring.
+> **"Given what we know at the start of a set (season, team, starting zone, half), what is the probability this possession will be a far set?"**
 
-**Prior work — what exists and what’s missing**  
-Published work on women’s rugby league is strong on **physical demands**, **injury** and **movement**. Possession-level **tactical** models — especially for the NRLW — are limited. Our contribution is to (1) provide a clean, **set-level** dataset and (2) demonstrate a **leakage-safe** modelling approach that turns context into expected outcomes coaches can act on.
+This question is important because the **NRLW has changed dramatically since 2018**. Comparing teams across different seasons using simple stats like *average metres gained* is unfair. A team in 2024 might look better than a 2018 team simply because they started in better field positions, not because they were more skilled.
 
-**Our framing choice — fixed 2018 benchmark**  
-We define “far” using a **fixed bar** (e.g., the 2018 80th percentile for own-half sets). Keeping the bar fixed lets us see genuine improvement or decline across eras, instead of moving the goalposts each season.
+To solve this, we first need a **consistent definition of success**.  
+We define a **"far set"** as any possession that gains **131.8 metres or more**.  
+This value represents the **80th percentile of metres gained from own-half starts in 2018**. By fixing this benchmark, we avoid “moving the goalposts” and can compare performances across seasons fairly.
 
+Crucially, our models only use predictors that a coach would know **before** the set begins:
 
----
+- **Season:** 2018, 2019, etc.  
+- **Team:** Which team has the ball.  
+- **Starting Zone:** Where on the field the set starts (e.g., deep in their own half, midfield).  
+- **Half:** First or second half.
 
-## 4. Overview
+This approach prevents **data leakage** — we aren’t using information from within the set (like number of passes or tackle breaks) to predict the outcome. This keeps the model realistic for setting **real-world expectations**, helping answer questions like:
 
-### 4.1 Descriptive statistics (from **Data Group 1’s product**)
-- **Unit:** 1 row = 1 team possession (set of six).  
-- **Key:** `(gameid, Teamname, Seasonid, halfNumber, setcount)` is unique.  
-- **Rows:** ≈ 28,991 in the current build.  
-- **Distances:** metres are direction-normalised and non-negative.  
-- **Zones:** each set has a start zone (fine) and a coarse zone `HalfTag ∈ {Own, Mid, Opp}`.  
-- **Far-set bar:** fixed to the **2018** reference (example used in our Week-5 docs: ~P80 ≈ 141 m for own-half context).
-
-### 4.2 General insights
-- The distribution of `maxAdvance_set` is right-skewed. Most sets gain modest metres; a minority push very far.  
-- Start zone is the dominant context. Opponent-half starts are much more likely to be far sets than own-half starts.  
-- Season effects are present. Later seasons show a small uplift consistent with improving play and expansion.
-
-### 4.3 Plan (short)
-1) Define `far_set` using the fixed 2018 bar.  
-2) Use **only** pre-set features: `Seasonid`, `Teamname`, `halfNumber`, `HalfTag` or `setZone`.  
-3) Train on 2018–2023; test on 2024–2025.  
-4) Fit 4 models and compare on AUROC, AUPRC, accuracy, precision/recall, and calibration.  
-5) Turn results into benchmarking guidance for coaches.
+> “We started this set deep in our territory. Did we perform above or below what was expected for that situation?”
 
 ---
 
-## 5. EDA
+# 4. Overview
 
+## Descriptive Statistics and General Insights
 
+We began with **28,991 team possessions ("sets")** from the **2018 to 2025** seasons.  
+Using our fixed benchmark of **131.8 metres**, we found the league-wide average *far set rate* is **19.95%**, meaning roughly **1 in every 5 possessions** is a "far set."
 
-## 6. Feature engineering
+However, this average hides key patterns:
 
-- **Target (FarSet).**  
-  Compute the 2018 threshold in a consistent context (we use own-half to set the bar). Label each set `far_set = 1` if `maxAdvance_set ≥ threshold`, else `0`. The same threshold is used for all seasons.
+- **Imbalance:**  
+  The target variable `farSet_fixed` is imbalanced — 80% of sets are “failures” (0) and only 20% are “successes” (1). This will influence our model choice and evaluation metrics.
 
-- **Predictors (pre-set only).**  
-  `Seasonid`, `Teamname`, `halfNumber`, and either `setZone` (fine) or `HalfTag` (coarse).  
-  We do **not** use within-set outcomes such as `maxRun`, `maxKick`, or event-level counts for the **same** set.
+- **League Evolution:**  
+  Attacking success has increased over time, from **16.4% in 2018** to **21.2% in 2024**, suggesting genuine improvement in league quality.
 
-- **Encoding and hygiene.**  
-  Treat categoricals with one-hot encoding. Handle unknown categories safely so new teams or zones in later seasons do not break the model. Verify no duplicate keys and basic missingness rules.
+- **Context Matters:**  
+  Starting position has a clear effect. Sets beginning deep in a team’s own end (zone `YR`) have the lowest success rate (**18.4%**), while those starting closer to the opposition’s line (`CL`) have the highest (**21.2%**).
 
-- **Leakage rules.**  
-  If a variable could only be known after the set begins, it is excluded. Splits are by season to prevent future information from leaking into the past.
-
----
-
-## 7. The models used
-
-We use four  models to answer the research question:  
-
-1) **Linear Probability Model**  
-   - **What it tests:** a simple linear link between context dummies and the probability of a far set.  
-   - **Why include it:** sanity baseline for direction and sign of effects; easy to communicate.  
-   - **How we use it:** fit on training seasons with zone-only and with full pre-set features; compare fitted probabilities to observed rates by bins.
-
-2) **Regularised Logistic Regression**  
-   - **What it tests:** a log-odds link with L2 regularisation to control overfitting as categories expand.  
-   - **Why include it:** interpretable and well-calibrated in many tabular problems; produces odds ratios that coaches understand.  
-   - **How we use it:** train with grouped cross-validation by season; report coefficients, odds ratios, and a reliability plot.
-
-3) **Random Forest**  
-   - **What it tests:** non-linear interactions, for example a team benefiting from a specific zone in particular seasons.  
-   - **Why include it:** strong ranking performance and robust to noise; offers permutation importance for explainability.  
-   - **How we use it:** fit on training seasons, measure AUROC/AUPRC on held-out seasons, inspect importance to see if it agrees with logistic signs.
-
-4) **Gradient Boosting (Histogram-based)**  
-   - **What it tests:** boosted trees for better discrimination on tabular data.  
-   - **Why include it:** often the best ranking model in practice; can be paired with probability calibration for better reliability.  
-   - **How we use it:** train on early seasons with light tuning; calibrate probabilities on training folds if needed; evaluate on held-out seasons.
-
-All four models use the same features and the same time-aware split so the comparison is fair.
+- **Team Skill:**  
+  Teams vary substantially. The **Zebras** have the best historical performance (**23.5% far-set rate**), while the **Gliders** have the lowest (**17.7%**).
 
 ---
 
-## 8. Model comparison
+## Modelling Plan
 
-### 8.1 Criteria
-- **Primary:** AUROC (ranking), AUPRC if the positive class is rare.  
-- **Secondary:** accuracy, precision, recall, F1 at a 0.5 threshold.  
-- **Calibration:** Brier score and a reliability plot.  
-- **Practicality:** interpretability, stability across seasons, and ease of deployment.
+We used a **time-aware split** to simulate real forecasting — no shuffling across seasons.
 
-### 8.2 Expected outcomes
-- **Zone-only LPM and logistic** set the floor.  
-- **Full logistic** improves discrimination and remains interpretable.  
-- **Random Forest and Gradient Boosting** often lift AUROC further; boosting plus calibration tends to give the best probability quality.  
-- **Recommended pair:** use **calibrated boosting** for ranking and **regularised logistic** for explainable reporting and quick checks.
+- **Training Set:** 2018–2024 data (**19,550 possessions**)  
+- **Test Set (Holdout):** Entire 2025 season (**9,441 possessions**)
 
----
+This ensures the model learns from history and is evaluated on how well it predicts the *future* (2025 season).
 
-## 9. Findings
+Because our data is imbalanced (80/20), simple accuracy is misleading — a model predicting “0” every time would be **80% accurate but useless**.  
+Instead, our primary evaluation metric is **AUC (Area Under the ROC Curve)**, which measures how well the model distinguishes between “far” and “normal” sets.
 
-> INSERT FINDINGS HERE WHEN WE ACTUALLY GOT FINDINGS
+We compared **four classification models**:
 
+1. **Logistic Regression (Balanced):**  
+   A simple, robust baseline model adjusted for class imbalance.
 
----
+2. **Tuned Logistic Regression (CV):**  
+   A refined version with hyperparameter tuning via cross-validation.
 
-## 10. Recommendations
+3. **Random Forest:**  
+   An ensemble of decision trees that averages multiple models for stability.
 
-### 10.1 For coaches and analysts
-1. **Benchmark with context.** After each match, compare actual far-set rate with the model’s expected rate given start contexts. Review high-expectation failures and low-expectation successes.  
-2. **Dashboards.** Track predicted vs actual by **team × zone × season**. Use traffic-light colouring to surface under- and over-performance.  
-3. **Drift monitoring.** Keep the 2018 bar fixed. If expected probabilities climb league-wide, tactics or execution are improving. If they fall, look at rule changes, schedule, or weather patterns.
-
-### 10.2 For future analysts
-- Prefer **time-aware** splits; random splits inflate scores in evolving competitions.  
-- Run **threshold sensitivity** checks (for example P75 and P85).  
-- Consider **opponent strength** and **venue** if those are reliably available pre-set.  
-- Extend with **expected metres** as a regression companion to this classifier.
+4. **Gradient Boosting (HistGradient):**  
+   A high-performing model that sequentially learns from previous mistakes.
 
 ---
 
-## 11. Conclusion
+# 5. EDA: Visualisation and Initial Insights
 
-Using only pre-set context, we can estimate the chance that a set will be a far set with useful accuracy. **Field position** is the main driver, and **season** and **team** effects add meaningful signal. In practice, a **calibrated gradient-boosting model** provides the strongest ranking of likely far sets, while a **regularised logistic regression** explains the “why” in plain language. Together they deliver context-adjusted, reliable probabilities that teams can use to review matches, benchmark performance, and track how the NRLW evolves over time.
+Before modelling, we explored how each predictor (Zone, Season, Team, Half) relates to the outcome (*Far Set Rate*).
 
 ---
 
-## 12. Appendix
+## 5.1 Far-Set Rate by Starting Zone
+
+| setZone | sets | far_rate |
+|----------|------|-----------|
+| CL | 1370 | 0.212409 |
+| GL | 3160 | 0.210759 |
+| CR | 1339 | 0.209111 |
+| CC | 3141 | 0.207259 |
+| GR | 3052 | 0.204128 |
+| GC | 4902 | 0.200734 |
+| YC | 5067 | 0.193408 |
+| YL | 3410 | 0.191496 |
+| YR | 3550 | 0.184507 |
+
+
+
+**Insight:**  
+Starting position strongly affects success. Sets starting deep in a team’s half (like `YR`) have lower success rates (18.4%) compared to those near the opposition’s line (`CL`) at 21.2%.  
+This confirms that `setZone` is an essential predictor.
+
+---
+
+## 5.2 Far-Set Rate by Season (League Evolution)
+
+| Season | sets | far_rate |
+|---------|------|-----------|
+| 2018 | 775 | 0.163871 |
+| 2019 | 753 | 0.172643 |
+| 2020 | 732 | 0.199454 |
+| 2021 | 2314 | 0.189715 |
+| 2022 | 2329 | 0.202233 |
+| 2023 | 6179 | 0.206830 |
+| 2024 | 6468 | 0.211812 |
+| 2025 | 9441 | 0.192988 |
+
+
+
+**Insight:**  
+There’s a clear upward trend in attacking performance from 2018 to 2024, reflecting improved tactics, coaching, and athleticism.  
+The slight dip in 2025 (our test set) could be due to league expansion or natural variation.
+
+---
+
+## 5.3 Far-Set Rate by Team
+
+| Teamname | sets | far_rate |
+|-----------|------|-----------|
+| Zebras | 2709 | 0.235142 |
+| Rhinos | 1910 | 0.210995 |
+| Rams | 3252 | 0.210332 |
+| Quokkas | 2621 | 0.209462 |
+| Galahs | 3404 | 0.197709 |
+| Sugartails | 3572 | 0.194849 |
+| Armadillos | 1889 | 0.193224 |
+| Dingoes | 1951 | 0.192722 |
+| Devils | 2809 | 0.187255 |
+| Hamsters | 1189 | 0.184188 |
+| Cockatoos | 722 | 0.180055 |
+| Gliders | 2963 | 0.177185 |
+
+
+**Insight:**  
+Team identity clearly influences outcomes. The **Zebras** outperform all others (23.5%), while the **Gliders** lag behind (17.7%). This justifies including `Teamname` in the model.
+
+---
+
+## 5.4 Far-Set Rate by Half-Tag
+
+| HalfTag | sets | far_rate |
+|----------|------|-----------|
+| Mid | 5850 | 0.208889 |
+| Opp | 11114 | 0.204517 |
+| Own | 12027 | 0.190239 |
+
+
+**Insight:**  
+The game half has a weak relationship with success. Far-set rates are similar across halves — 20.9% (`Mid`), 20.4% (`Opp`), and 19.0% (`Own`).  
+We’ll include it for completeness, but it’s unlikely to be a major driver.
+
+
+# 6. Models: Design and Results
+
+To answer our research question, we trained several classification models. The goal was not just to find the most accurate model, but the one that could best **generalize to unseen data**.  
+That’s why we trained on **2018–2024** and tested on the **2025** season.
+
+Our primary evaluation metric was **AUC (Area Under the Curve)**, which measures how well a model distinguishes between a “far set” (1) and a “normal set” (0):
+
+- **AUC = 1.0:** Perfect model  
+- **AUC = 0.5:** No better than a random coin flip  
+
+All models used the same four features: `Seasonid`, `Teamname`, `setZone`, and `HalfTag`.
+
+---
+
+## 6.1 Model 1: Logistic Regression (Balanced)
+
+**What is it?**  
+A simple, reliable baseline model that fits a linear boundary between the two classes. It’s fast, interpretable, and ideal as a starting point.
+
+**Why we chose it:**  
+We used `class_weight='balanced'` so the model pays extra attention to the rare class (far sets = 20%). This prevents it from defaulting to always guessing “0.”
+
+**Results:**  
+This baseline achieved a **Test AUC of 0.525**.  
+While modest, it set the benchmark for all other models. It’s slightly better than random guessing, showing a weak but real signal.
+
+---
+
+## 6.2 Model 2: Tuned Logistic Regression (CV)
+
+**What is it?**  
+Same model type as above, but fine-tuned using **cross-validation** to find the “best” hyperparameters on the 2018–2024 data.
+
+**Why we chose it:**  
+To see if optimization could improve the baseline without adding complexity.
+
+**Results:**  
+The tuned version scored **Test AUC = 0.522**, slightly worse than the simple baseline.  
+This suggests **overfitting** — the tuning improved performance on old data but didn’t generalize to 2025.
+
+---
+
+## 6.3 Model 3: Random Forest
+
+**What is it?**  
+An ensemble model that builds **hundreds of decision trees** on random subsets of the data and averages their predictions.
+
+**Why we chose it:**  
+Random Forests can capture **non-linear relationships** (e.g., “Zone YR performs worse only in 2024”). We hoped it would find deeper interactions missed by logistic regression.
+
+**Results:**  
+The model scored **Test AUC = 0.518**, showing **poor generalization**.  
+It fit the training data too well, learning noise and season-specific quirks that didn’t carry over to 2025.
+
+---
+
+## 6.4 Model 4: Gradient Boosting (HistGradientBoosting)
+
+**What is it?**  
+An advanced tree-based model that builds trees **sequentially**, each one correcting the errors of the previous. We used the efficient **HistGradientBoosting** implementation.
+
+**Why we chose it:**  
+Gradient Boosting Machines (GBMs) often win data science competitions. They’re designed to squeeze maximum predictive power from structured data.
+
+**Results:**  
+The HistGradientBoosting model scored **Test AUC = 0.521**, again below the simple baseline.  
+Despite its sophistication, it **overfit** the training data and failed to improve real-world performance.
+
+---
+
+# 7. Model Comparison
+
+The table below summarises test-set performance across all models (2025 season).  
+Best results per metric are in **bold**.
+
+| Model | Test AUC ↑ | Test AP ↑ | Test Brier ↓ | Test LogLoss ↓ |
+|--------|-------------|------------|---------------|----------------|
+| Logistic Regression (Balanced) | **0.525** | 0.201 | 0.160 | **0.432** |
+| Logistic Regression (Tuned CV) | 0.522 | 0.200 | 0.160 | 0.432 |
+| Random Forest | 0.518 | 0.201 | 0.160 | 0.436 |
+| Gradient Boosting (Standard) | 0.519 | 0.202 | 0.160 | 0.433 |
+| Gradient Boosting (Hist) | 0.521 | **0.203** | 0.160 | 0.433 |
+
+*(Data from DATA3001_MODELLING_CODE.ipynb, df_results table)*
+
+---
+
+### And the Winner Is...
+
+**Logistic Regression (Balanced)** is the selected model.
+
+Despite its simplicity, it outperformed all complex alternatives.  
+The Random Forest and Gradient Boosting models **overfit** and failed to generalize to the 2025 data.  
+The balanced logistic model was **most stable and reliable**.
+
+However, its **AUC = 0.525** is still very low — only 2.5% better than random guessing.  
+This means that the pre-set features (Season, Team, Zone, Half) alone have **weak predictive power**.
+
+In other words, knowing this context isn’t enough to accurately predict success.  
+The real drivers of far sets are likely **in-set execution factors**, which were intentionally excluded.
+
+---
+
+### [INSERT FIGURES HERE]
+
+**Model performance plots for the winning model (logreg_bal):**
+
+- ROC Curve: `fig_roc_logistic.png`  
+- Precision–Recall Curve: `fig_pr_logistic.png`  
+- Calibration (Reliability) Curve: `fig_calibration_logistic.png`  
+- Decile Lift Chart: `fig_decile_lift.png`
+
+---
+
+# 8. Findings and Limitations
+
+Since we selected the **Logistic Regression (Balanced)** model, we can interpret its internal coefficients to understand what it learned.
+
+---
+
+## 8.1 Most Important Features
+
+We used two methods to find the most influential features:
+
+- **Permutation Importance:**  
+  Shuffle one feature at a time and measure how much model performance drops.  
+  Bigger drops = more important features.
+
+- **Odds Ratios:**  
+  Show how each feature affects the probability of a far set.  
+  - Odds ratio **> 1:** Increases far-set likelihood  
+  - Odds ratio **< 1:** Decreases far-set likelihood
+
+---
+
+### [INSERT FIGURES HERE]
+
+- Permutation Importance: `fig_perm_importance_logistic.png`  
+- Odds Ratios: `fig_odds_ratios_top20.png`
+
+---
+
+### Key Insights
+
+- **Specific Zones Matter:**  
+  Zones like `setZone_GC` were among the most important predictors.
+
+- **Team Identity Matters:**  
+  Variables like `Teamname_Devils` or `Teamname_Zebras` strongly influenced predictions.
+
+- **Broad Factors Don’t:**  
+  Variables like `Seasonid` and `HalfTag` contributed very little — the model found more signal in team and zone context.
+
+---
+
+## 8.2 Omitted Variables and Potential Bias
+
+This is the most critical limitation of our analysis.
+
+We deliberately **omitted all in-set variables** such as:
+
+- Number of passes  
+- Number of kicks  
+- Tackle breaks  
+- Player errors  
+- Player skill or speed  
+- Opponent defensive quality  
+
+We did this to avoid **data leakage** and focus on pre-set context.  
+However, this creates **Omitted Variable Bias** — when unobserved variables distort the apparent effect of those included.
+
+---
+
+### Example
+
+The model shows that `Teamname_Zebras` has a high positive effect.  
+Does this mean the **Zebras** are inherently better?  
+No — it’s likely because:
+
+- They have more **skilled players**, or  
+- They have a **better coach**
+
+Both are **omitted variables**.  
+Since the model can’t see these true causes, it assigns credit to `Teamname_Zebras` instead.
+
+---
+
+### Why Random Assignment Helps
+
+In theory, randomizing player assignment across teams would break this link.  
+If all players were reshuffled each season, `Teamname` would no longer capture player skill or coaching quality — its effect would drop to zero.  
+That’s what would remove the bias.
+
+But in real-world sports data, **random assignment isn’t possible**.  
+Teams recruit and retain top players, meaning that `Teamname` is inherently correlated with hidden skill variables.
+
+As a result, our feature importance reflects **correlation, not causation**.  
+The model finds patterns useful for **prediction**, not for explaining *why* teams perform as they do.
+
+---
+
+
+## 9. Recommendations
+
+Based on our findings, we have three main recommendations:
+
+### For Coaches and Analysts: Focus on Execution, Not Context  
+The most significant finding of this report is that pre-set context (starting zone, season, half) has a very weak relationship with attacking success (an AUC of only **0.525**).  
+In simple terms, a set starting in a "bad" position is almost as likely to become a "far set" as one starting in a "good" position.  
+The recommendation is clear: context is not an excuse for failure, nor a guarantee of success.  
+Performance is almost entirely dictated by what happens **during** the set (execution, skill, decision-making, error reduction).  
+Coaches should focus resources on improving these in-set actions rather than worrying excessively about field position.
+
+### For Performance Benchmarking: Use This Model to Adjust Expectations  
+While the model is not strongly predictive, it is useful for its original purpose: setting a fair, context-adjusted expectation.  
+For example, the model might predict a 19% chance of a far set from a deep kick return, but a 22% chance from a midfield start.  
+Analysts can use these probabilities as a “pass/fail” mark:  
+- If the team is consistently turning **19% chances into 25% realities**, they are performing **above expectation**.  
+- If they are turning **22% chances into 18% realities**, they are **underperforming**.  
+
+The model’s weakness is its strength: it proves that teams can and should perform from anywhere on the field.
+
+### For Future Modelling: Include Execution Variables to Understand Why  
+This model answers *“What is the probability?”* but not *“Why?”*  
+The low AUC score strongly implies that the real reasons for success are found in the execution variables we intentionally omitted (passes, tackle breaks, errors, kicks, etc.).  
+To build a model that explains attacking success, future research must include these in-set variables.  
+This would shift the goal from **prediction** to **driver analysis**, which is likely more valuable for understanding how to create more successful attacks.
+
+---
+
+## 10. Conclusion
+
+This report set out to answer a practical coaching question:  
+> “Given what we know at the start of a set (season, team, starting zone, half), what is the probability this possession will be a far set?”
+
+To do this, we established a fixed performance benchmark:  
+A “far set” was defined as any possession gaining over **131.8 metres** (the 80th percentile of own-half gains in 2018).  
+We trained four different machine learning models — **Logistic Regression**, **Tuned Logistic Regression**, **Random Forest**, and **HistGradient Boosting** — on data from **2018–2024**, holding back the entire **2025 season** as a true “out-of-time” test set.
+
+The results were conclusive.  
+The more complex models (Random Forest, Gradient Boosting) **overfit** the training data and failed to generalize to the 2025 season.  
+The best-performing model was the simplest: a **Balanced Logistic Regression**, which achieved a **Test AUC of 0.525**.
+
+This “winning” score is the most important finding.  
+An AUC of 0.525 means the model is only **2.5% better than a random coin flip** at predicting the outcome.  
+This tells us, definitively, that **pre-set context alone is a very poor predictor** of attacking success in the NRLW.
+
+This finding is **not a failure** of the model, but a **deep insight** into the sport.  
+It proves that the outcome of a set is not predetermined by the starting situation.  
+Success is overwhelmingly driven by the **skill, tactics, and execution** that happen within the set itself.  
+
+This model successfully quantifies the starting-point expectation, providing a **fair baseline** that coaches and analysts can use to measure true team performance, separate from the context they play in.
+
+---
+
+## 11. Appendix
 
 ### Appendix A — Reproducibility steps 
-
-WRITE HERE HOW TO REPRODUCE THE CODE IN STEPS PLUS ALSO ADD THE CODE WE USED TO GET FINDINGS HERE AND ALSO SOME PLOTS
 
 ### Appendix B — Contributers
 ADD ALL that info here later, who did what etc
