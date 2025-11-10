@@ -296,6 +296,16 @@ Despite its sophistication, it **overfit** the training data and failed to impro
 
 # 7. Model Comparison
 
+## 7.1 Evaluation metrics
+Model performance was accessed using both ranking and probability calibration metrics to capture the goals of interpretability and reliability.
+| Metric | Purpose| Interpretation |
+|-------|---------|----------------|
+| Area under the curve (AUC) | Measures ability to rank positive vs negative sets | Higher = better discrimination | 
+| Average precision (AP) | Focuses on precision–recall for rare positive events | Higher = better handling of class imbalance | 
+| Brier Score | Measures accuracy of predicted probabilities | Lower = better calibration | 
+| LogLoss | Penalises overconfident incorrect predictions | Lower = better probabilistic fit | 
+
+## 7.2 Comparison results
 The table below summarises test-set performance across all models (2025 season).  
 Best results per metric are in **bold**.
 
