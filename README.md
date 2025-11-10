@@ -12,7 +12,7 @@
 - [2. Executive summary](#2-executive-summary)
 - [3. Background](#3-background)
 - [4. Overview: descriptive statistics, insights, and plan](#4-overview-descriptive-statistics-insights-and-plan)
-- [5. EDA](#5-overview-descriptive-statistics-insights-and-plan)
+- [5.EDA](https://github.com/JIANGNOE/Analysis-of-NRLW-Game-Style-Evolution-2rd-group/blob/main/README.md#5-eda)
 - [6. Feature engineering](#5-feature-engineering)
 - [7. The models used](#6-the-models-used)
 - [8. Model comparison](#7-model-comparison)
