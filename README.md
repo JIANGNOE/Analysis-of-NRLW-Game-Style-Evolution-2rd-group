@@ -359,8 +359,6 @@ We compare regularised GLM (logistic) with Random Forest, Gradient Boosting, and
 - Even the best model has AUC ≈ 0.52–0.53, only slightly above random → pre-set context alone has limited predictive power.
 
 - Real signal is in in-set execution (play, decisions, pressure), which is intentionally excluded here; this model is a clean, leakage-safe baseline, not a high-accuracy predictor.
-  
-
 
 ### [INSERT FIGURES HERE]
 
@@ -370,13 +368,13 @@ We compare regularised GLM (logistic) with Random Forest, Gradient Boosting, and
    <img width="1600" height="1000" alt="fig_roc_logistic" src="https://github.com/user-attachments/assets/be62ba8b-8d79-4c6a-bc97-7fa0aa85724e" />
 
 - Precision–Recall Curve: `fig_pr_logistic.png`
-    <img width="1600" height="1000" alt="fig_pr_logistic" src="https://github.com/user-attachments/assets/30044827-e975-48c0-ba1a-c70d0dbecaa4" />
+   <img width="1600" height="1000" alt="fig_pr_logistic" src="https://github.com/user-attachments/assets/30044827-e975-48c0-ba1a-c70d0dbecaa4" />
 
 - Calibration (Reliability) Curve: `fig_calibration_logistic.png`
-    <img width="1600" height="1000" alt="fig_calibration_logistic" src="https://github.com/user-attachments/assets/ea39fbc7-eeef-4697-af46-7908fc95e18f" />
+   <img width="1600" height="1000" alt="fig_calibration_logistic" src="https://github.com/user-attachments/assets/ea39fbc7-eeef-4697-af46-7908fc95e18f" />
 
 - Decile Lift Chart: `fig_decile_lift.png`
-  <img width="1600" height="900" alt="fig_decile_lift" src="https://github.com/user-attachments/assets/160e18a0-24c2-465b-8e68-2a5b727ac132" />
+   <img width="1600" height="900" alt="fig_decile_lift" src="https://github.com/user-attachments/assets/160e18a0-24c2-465b-8e68-2a5b727ac132" />
 
 ---
 
