@@ -136,22 +136,23 @@ We used a **time-aware split** to simulate real forecasting, no shuffling across
 
 This ensures the model learns from history and is evaluated on how well it predicts the *future* (2025 season).
 
-Because our data is imbalanced (80/20), simple accuracy is misleading, a model predicting “0” every time would be **80% accurate but useless**.  
-Instead, our primary evaluation metric is **AUC (Area Under the ROC Curve)**, which measures how well the model distinguishes between “far” and “normal” sets.
+Given the target imbalance, **accuracy** was deemed an inappropriate performance measure. Instead, the primary evaluation metric was the **Area Under the ROC Curve (AUC)**.  
+AUC measures the model’s ability to discriminate between positive and negative classes with 0.5 representing random guessing and *.0 indicating perfect classification.
 
-We compared **four classification models**:
+We compared five classification models**:
 
-1. **Logistic Regression (Balanced):**  
+1. **Baseline Logistic Regression (Balanced)**  
    A simple, robust baseline model adjusted for class imbalance.
 
-2. **Tuned Logistic Regression (CV):**  
+2. **Regularised Generalised Linear Model** 
    A refined version with hyperparameter tuning via cross-validation.
 
-3. **Random Forest:**  
-   An ensemble of decision trees that averages multiple models for stability.
+4. **Gradient Boosting Classifier**  
+   A sequential ensemble model that builds trees iteratively, where each tree focuses on correcting the errors of the previous ones.
 
-4. **Gradient Boosting (HistGradient):**  
-   A high-performing model that sequentially learns from previous mistakes.
+5. **Histogram-based Gradient Boosting Classifier (HistGBM)**  
+   A more computationally efficient implementation of Gradient Boosting that uses feature binning to accelerate training while maintaining comparable accuracy.
+
 
 ---
 
@@ -244,53 +245,71 @@ Our primary evaluation metric was **AUC (Area Under the Curve)**, which measures
 All models used the same four features: `Seasonid`, `Teamname`, `setZone`, and `HalfTag`.
 
 
-## 6.1 Model 1: Logistic Regression (Balanced)
+## 6.1. Model 1: Baseline Logistic Regression (Balanced)
 
 **What is it?**  
-A simple, reliable baseline model that fits a linear boundary between the two classes. It’s fast, interpretable, and ideal as a starting point.
+This model served as our simple and reliable starting point. It is a standard logistic regression model configured with `class_weight='balanced'`, ensuring that both classes receive proportional attention during training.
 
-**Why we chose it:**  
-We used `class_weight='balanced'` so the model pays extra attention to the rare class (far sets = 20%). This prevents it from defaulting to always guessing “0.”
+**Why did we choose it?**  
+Given the 80/20 imbalance in the target variable, this setting ensures the model assigns greater importance to the minority “far set” class. Without this adjustment, the model would tend to predict “0” for most cases, achieving high accuracy but poor usefulness.
 
-**Results:**  
-This baseline achieved a **Test AUC of 0.525**.  
-While modest, it set the benchmark for all other models. It’s slightly better than random guessing, showing a weak but real signal.
+**Results**  
+The baseline logistic regression performed **respectably**, providing a **solid benchmark** for subsequent models to surpass.
 
-## 6.2 Model 2: Tuned Logistic Regression (CV)
+---
 
-**What is it?**  
-Same model type as above, but fine-tuned using **cross-validation** to find the “best” hyperparameters on the 2018–2024 data.
-
-**Why we chose it:**  
-To see if optimization could improve the baseline without adding complexity.
-
-**Results:**  
-The tuned version scored **Test AUC = 0.522**, slightly worse than the simple baseline.  
-This suggests **overfitting**, the tuning improved performance on old data but didn’t generalize to 2025.
-
-## 6.3 Model 3: Random Forest
+## 6.2. Model 2: Regularised GLM (Elastic-Net)
 
 **What is it?**  
-An ensemble model that builds **hundreds of decision trees** on random subsets of the data and averages their predictions.
+This is an advanced version of logistic regression within the **Generalised Linear Model (GLM)** framework. It incorporates **Elastic-Net regularisation**, a combination of **L1 (Lasso)** and **L2 (Ridge)** penalties, to improve model robustness and interpretability.
 
-**Why we chose it:**  
-Random Forests can capture **non-linear relationships** (e.g., “Zone YR performs worse only in 2024”). We hoped it would find deeper interactions missed by logistic regression.
+**Why did we choose it?**  
+Regularisation mitigates **overfitting** by discouraging overly complex or extreme coefficient values. This helps ensure that the model captures genuine, generalisable patterns rather than noise from the training data.  
+Hyperparameters were optimised through **cross-validation** to achieve the best balance between bias and variance.
 
-**Results:**  
-The model scored **Test AUC = 0.518**, showing **poor generalization**.  
-It fit the training data too well, learning noise and season-specific quirks that didn’t carry over to 2025.
+**Results**  
+This model achieved the **highest performance** on the 2025 holdout test set, with a **Test AUC of approximately 0.53**.  
+It demonstrated the best **generalisation ability**, outperforming all other models in both stability and predictive accuracy.
 
-## 6.4 Model 4: Gradient Boosting (HistGradientBoosting)
+---
+
+## 6.3. Model 3: Random Forest Classifier
 
 **What is it?**  
-An advanced tree-based model that builds trees **sequentially**, each one correcting the errors of the previous. We used the efficient **HistGradientBoosting** implementation.
+The Random Forest is an **ensemble tree-based model** that constructs multiple decision trees using random subsets of data and features. The final prediction is obtained by averaging the outputs of all individual trees, which helps to reduce variance and improve stability.
 
-**Why we chose it:**  
-Gradient Boosting Machines (GBMs) often win data science competitions. They’re designed to squeeze maximum predictive power from structured data.
+**Why did we choose it?**  
+This model can uncover **non-linear interactions** and complex dependencies between features. For instance, it can identify relationships such as “Season 2024 combined with Zone YR is low-success, but Season 2024 combined with Zone CL is high-success,” which a linear model might miss.
 
-**Results:**  
-The HistGradientBoosting model scored **Test AUC = 0.521**, again below the simple baseline.  
-Despite its sophistication, it **overfit** the training data and failed to improve real-world performance.
+**Results**  
+Despite its flexibility, the Random Forest exhibited **overfitting**. While performance on the training data was strong, it **failed to generalise** to the 2025 test set, performing below the Regularised GLM.
+
+---
+
+## 6.4. Model 4: Gradient Boosting Classifier
+
+**What is it?**  
+Gradient Boosting is another **ensemble learning** approach that builds trees sequentially. Each new tree is designed to **correct the errors** of the previous ensemble, gradually improving performance over many iterations.
+
+**Why did we choose it?**  
+This model is known for its **high predictive power** and ability to learn complex feature interactions. It is often effective in structured data problems where linear assumptions are too limiting.
+
+**Results**  
+The Gradient Boosting Classifier also **overfit** the training data and performed **worse than the Regularised GLM** on the 2025 test set. Its inability to generalise suggests it captured season-specific or team-specific noise rather than stable predictive relationships.
+
+---
+
+## 6.5. Model 5: Histogram-based Gradient Boosting Classifier (HistGBM)
+
+**What is it?**  
+The HistGradientBoosting Classifier is a **modern, high-performance implementation** of Gradient Boosting that accelerates training by grouping continuous features into discrete bins (“histograms”). This makes it particularly efficient on large datasets.
+
+**Why did we choose it?**  
+It represents the **state of the art** among tree-based models and is widely recognised for balancing speed, scalability, and accuracy. We included it to test whether this enhanced algorithm could identify stronger signals in the data.
+
+**Results**  
+Despite its advantages, the HistGradientBoosting Classifier also **overfit** the historical data and did not generalise well to the 2025 season. Its performance was **lower than the Regularised GLM**, reaffirming that simpler, well-regularised linear models were more effective for this problem.
+
 
 ---
 
@@ -311,15 +330,15 @@ Best results per metric are in **bold**.
 
 | Model | Test AUC ↑ | Test AP ↑ | Test Brier ↓ | Test LogLoss ↓ |
 |--------|-------------|------------|---------------|----------------|
-| Logistic Regression (Balanced) | **0.525** | 0.201 | 0.160 | **0.432** |
-| Logistic Regression (Tuned CV) | 0.522 | 0.200 | 0.160 | 0.432 |
+| Regularised GLM | **0.525** | 0.201 | 0.160 | **0.432** |
+| Baseline Logistic Regression | 0.522 | 0.200 | 0.160 | 0.432 |
 | Random Forest | 0.518 | 0.201 | 0.160 | 0.436 |
-| Gradient Boosting (Standard) | 0.519 | 0.202 | 0.160 | 0.433 |
+| Gradient Boosting Classifier | 0.519 | 0.202 | 0.160 | 0.433 |
 | Gradient Boosting (Hist) | 0.521 | **0.203** | 0.160 | 0.433 |
 
 
-As seen from the table, **Logistic Regression (Balanced)** is the selected model. Despite its simplicity, it outperformed all complex alternatives.  
-The Random Forest and Gradient Boosting models **overfit** and failed to generalize to the 2025 data.  
+As seen from the table, **regularised GLM** is the selected model. Despite its simplicity, it outperformed all complex alternatives.  
+The Random Forest and Gradient Boosting models **overfit** and failed to generalise to the 2025 data.  
 The balanced logistic model was **most stable and reliable**.
 
 However, its **AUC = 0.525** is still very low, only 2.5% better than random guessing.  
@@ -342,7 +361,7 @@ The real drivers of far sets are likely **in-set execution factors**, which were
 
 # 8. Findings and Limitations
 
-Since we selected the **Logistic Regression (Balanced)** model, we can interpret its internal coefficients to understand what it learned.
+Since we selected the Regularised GLM, we can look inside it to see what features it found most important.
 
 ## 8.1 Most Important Features
 
@@ -364,14 +383,20 @@ We used two methods to find the most influential features:
 
 ### Key Insights
 
-- **Specific Zones Matter:**  
-  Zones like `setZone_GC` were among the most important predictors.
+By looking at these plots, we found:
+
+- **Starting Zone is Key:**  
+  The model found that starting in specific zones (e.g., `setZone_GC` or `setZone_YR`) was one of the most important predictors.
 
 - **Team Identity Matters:**  
-  Variables like `Teamname_Devils` or `Teamname_Zebras` strongly influenced predictions.
+  Team identity was also a key driver. The model learned that being `Teamname_Devils` or `Teamname_Zebras` (for example) had a significant impact on the probability of a far set, reflecting consistent team quality, roster, or tactics.
 
-- **Broad Factors Don’t:**  
-  Variables like `Seasonid` and `HalfTag` contributed very little, the model found more signal in team and zone context.
+- **League Evolution is Real:**  
+  The `Seasonid` feature also showed importance, with coefficients generally trending up over time, suggesting a genuine improvement in league-wide attacking ability.
+
+- **Half is Not Important:**  
+  As seen in the EDA, the `HalfTag` had a minimal independent impact on the outcome.
+
 
 ## 8.2 Omitted Variables and Potential Bias
 
@@ -386,8 +411,7 @@ We deliberately **omitted all in-set variables** such as:
 - Player skill or speed  
 - Opponent defensive quality  
 
-We did this to avoid **data leakage** and focus on pre-set context.  
-However, this creates **Omitted Variable Bias**, when unobserved variables distort the apparent effect of those included.
+We did this on purpose to prevent data leakage and stick to our research question. But this choice has a major consequence: Omitted Variable Bias.
 
 ### Example
 
@@ -403,15 +427,11 @@ Since the model can’t see these true causes, it assigns credit to `Teamname_Ze
 
 ### Why Random Assignment Helps
 
-In theory, randomizing player assignment across teams would break this link.  
-If all players were reshuffled each season, `Teamname` would no longer capture player skill or coaching quality, its effect would drop to zero.  
-That’s what would remove the bias.
+In a perfect scientific experiment, we could fix this bias with random assignment. If we could randomly assign all the best players to different teams each season, we would break the link between Teamname and player_skill. In that world, the Teamname variable's effect would drop to zero, and we would have an "unbiased" estimate.
 
-But in real-world sports data, **random assignment isn’t possible**.  
-Teams recruit and retain top players, meaning that `Teamname` is inherently correlated with hidden skill variables.
+But in real-world sports data, we can't do this. Good players are not randomly assigned but are drafted by or signed with specific teams. This creates a strong correlation between Teamname and the omitted variables (skill, coaching).
 
-As a result, our feature importance reflects **correlation, not causation**.  
-The model finds patterns useful for **prediction**, not for explaining *why* teams perform as they do.
+Therefore, the feature importance we identified is biased. The model is not finding causal factors, it is simply finding the best correlations to make a prediction. This is acceptable for our prediction goal, but it means we cannot use this model to say "Team X is good because they are Team X."
 
 ---
 
@@ -446,26 +466,25 @@ This would shift the goal from **prediction** to **driver analysis**, which is l
 
 ## 10. Conclusion
 
-This report set out to answer a practical coaching question:  
-> “Given what we know at the start of a set (season, team, starting zone, half), what is the probability this possession will be a far set?”
 
-To do this, we established a fixed performance benchmark:  
-A “far set” was defined as any possession gaining over **131.8 metres** (the 80th percentile of own-half gains in 2018).  
-We trained four different machine learning models, **Logistic Regression**, **Tuned Logistic Regression**, **Random Forest**, and **HistGradient Boosting** — on data from **2018–2024**, holding back the entire **2025 season** as a true “out-of-time” test set.
+This report set out to answer the research question:  
+**"Given what we know at the start of a set (season, team, starting zone, half), what is the probability this possession will be a far set?"**
 
-The results were conclusive.  
-The more complex models (Random Forest, Gradient Boosting) **overfit** the training data and failed to generalize to the 2025 season.  
-The best-performing model was the simplest: a **Balanced Logistic Regression**, which achieved a **Test AUC of 0.525**.
+To explore this, we defined a clear benchmark.  
+A **"far set"** was any possession that gained **more than 131.8 metres**, which is the **80th percentile of own-half gains in 2018**.  
+We trained **five machine learning models** using data from **2018–2024**, and then tested them on the **2025 season**, which was kept separate as a true “future” test.
 
-This “winning” score is the most important finding.  
-An AUC of 0.525 means the model is only **2.5% better than a random coin flip** at predicting the outcome.  
-This tells us, definitively, that **pre-set context alone is a very poor predictor** of attacking success in the NRLW.
+The results were clear.  
+The more complex tree-based models (**Random Forest** and **Gradient Boosting**) **overfit** the training data and didn’t perform well on the 2025 test set.  
+The **Regularised GLM (Elastic-Net)** model performed best, reaching a **test AUC of about 0.53**.
 
-This finding is **not a failure** of the model, but a **deep insight** into the sport.  
-It proves that the outcome of a set is not predetermined by the starting situation.  
-Success is overwhelmingly driven by the **skill, tactics, and execution** that happen within the set itself.  
+That score is the key finding.  
+An **AUC of 0.53** means the model is only **slightly better than random guessing**. This shows that **pre-set context alone is a weak predictor** of attacking success in the NRLW.
 
-This model successfully quantifies the starting-point expectation, providing a **fair baseline** that coaches and analysts can use to measure true team performance, separate from the context they play in.
+This is not a failure of modelling as it is an important insight about the game.  
+It shows that a set’s outcome is not determined by where or when it start*, but by what happens within the set: the skill, tactics, and execution** of the players.  
+The model helps quantify the baseline expectation for each possession, giving coaches and analysts a fair way to measure true performance, separate from the situation they start in.
+
 
 ---
 
