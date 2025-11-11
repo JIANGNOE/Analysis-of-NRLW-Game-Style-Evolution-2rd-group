@@ -123,6 +123,7 @@ However, this average hides key patterns:
   <img width="1800" height="1000" alt="fig_evolution_season_zone" src="https://github.com/user-attachments/assets/2d42958e-75b4-4655-a35f-9112364b853c" />
 
   <img width="2000" height="1200" alt="fig_heatmap_season_zone" src="https://github.com/user-attachments/assets/dfefc636-85ce-4e4b-9733-967e10d6a6dc" />
+  *These plots show genuine improvement in attacking performance over time on a fixed benchmark, with strong dependence on starting zone.*
 
 
 - **Context Matters:**  
