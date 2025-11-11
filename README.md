@@ -120,6 +120,10 @@ However, this average hides key patterns:
 
 - **League Evolution:**  
   Attacking success has increased over time, from **16.4% in 2018** to **21.2% in 2024**, suggesting genuine improvement in league quality.
+  <img width="1800" height="1000" alt="fig_evolution_season_zone" src="https://github.com/user-attachments/assets/2d42958e-75b4-4655-a35f-9112364b853c" />
+
+  <img width="2000" height="1200" alt="fig_heatmap_season_zone" src="https://github.com/user-attachments/assets/dfefc636-85ce-4e4b-9733-967e10d6a6dc" />
+
 
 - **Context Matters:**  
   Starting position has a clear effect. Sets beginning deep in a team’s own end (zone `YR`) have the lowest success rate (**18.4%**), while those starting closer to the opposition’s line (`CL`) have the highest (**21.2%**).
@@ -394,8 +398,11 @@ We used two methods to find the most influential features:
 
 ### [INSERT FIGURES HERE]
 
-- Permutation Importance: `fig_perm_importance_logistic.png`  
+- Permutation Importance: `fig_perm_importance_logistic.png`
+   <img width="1800" height="1200" alt="fig_perm_importance_logistic" src="https://github.com/user-attachments/assets/d0fcd38d-deed-430b-be41-7a658da99f53" />
+
 - Odds Ratios: `fig_odds_ratios_top20.png`
+  <img width="1800" height="1200" alt="fig_odds_ratios_top20" src="https://github.com/user-attachments/assets/60ebc821-93a3-4520-8db4-95015d34761b" />
 
 ### Key Insights
 
