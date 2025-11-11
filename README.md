@@ -354,6 +354,8 @@ We compare regularised GLM (logistic) with Random Forest, Gradient Boosting, and
 - Even the best model has AUC ≈ 0.52–0.53, only slightly above random → pre-set context alone has limited predictive power.
 
 - Real signal is in in-set execution (play, decisions, pressure), which is intentionally excluded here; this model is a clean, leakage-safe baseline, not a high-accuracy predictor.
+- 
+<img width="1600" height="1000" alt="fig_calibration_logistic (1)" src="https://github.com/user-attachments/assets/75b51715-6609-4d47-9ea9-ac6f0f69fd88" />
 
 
 ### [INSERT FIGURES HERE]
