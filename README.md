@@ -337,15 +337,23 @@ Best results per metric are in **bold**.
 | Gradient Boosting (Hist) | 0.521 | **0.203** | 0.160 | 0.433 |
 
 
-As seen from the table, **regularised GLM** is the selected model. Despite its simplicity, it outperformed all complex alternatives.  
-The Random Forest and Gradient Boosting models **overfit** and failed to generalise to the 2025 data.  
-The balanced logistic model was **most stable and reliable**.
+We compare regularised GLM (logistic) with Random Forest, Gradient Boosting, and HistGradientBoosting using only pre-set features (Season, Team, Zone, Half) and a strict time-aware split (train ≤2024, test 2025).
 
-However, its **AUC = 0.525** is still very low, only 2.5% better than random guessing.  
-This means that the pre-set features (Season, Team, Zone, Half) alone have **weak predictive power**.
+### Why choose regularised GLM?
 
-In other words, knowing this context isn’t enough to accurately predict success.  
-The real drivers of far sets are likely **in-set execution factors**, which were intentionally excluded.
+- Best overall on test: Highest / equal-best AUC & PR-AUC, competitive Brier; tree models give no meaningful gain.
+
+- Less overfitting: Tree ensembles fit noise and don’t generalise as well to 2025.
+
+- Interpretable & compliant: Coefficients/odds ratios are transparent for coaches and use only allowed pre-set inputs (no leakage), easy to re-fit.
+
+- Better calibration: More reliable probabilities for decision-making.
+
+###Key takeaway
+
+- Even the best model has AUC ≈ 0.52–0.53, only slightly above random → pre-set context alone has limited predictive power.
+
+- Real signal is in in-set execution (play, decisions, pressure), which is intentionally excluded here; this model is a clean, leakage-safe baseline, not a high-accuracy predictor.
 
 
 ### [INSERT FIGURES HERE]
