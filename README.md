@@ -349,7 +349,7 @@ We compare regularised GLM (logistic) with Random Forest, Gradient Boosting, and
 
 - Better calibration: More reliable probabilities for decision-making.
 
-###Key takeaway
+### Key takeaway
 
 - Even the best model has AUC ≈ 0.52–0.53, only slightly above random → pre-set context alone has limited predictive power.
 
