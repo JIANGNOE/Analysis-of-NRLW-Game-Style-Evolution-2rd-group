@@ -125,7 +125,8 @@ However, this average hides key patterns:
     ***Figure 1. Far-set rate by season and starting zone (collapsed).Lines show different starting zones. Over time, far-set rates gradually rise on the fixed 131.8 m benchmark; sets starting in Good Ball zones are consistently most likely to succeed, while Own Half starts are least likely.***
 
   <img width="2000" height="1200" alt="fig_heatmap_season_zone" src="https://github.com/user-attachments/assets/dfefc636-85ce-4e4b-9733-967e10d6a6dc" />
-  ***Figure 2. Far-set rate by season and starting zone. Warmer colors indicate a higher probability of a far set. Across seasons, far-set rates generally rise on the fixed 131.8 m benchmark; within each season,success increases as starting field position moves closer to the opposition half.***
+  
+   ***Figure 2. Far-set rate by season and starting zone. Warmer colors indicate a higher probability of a far set. Across seasons, far-set rates generally rise on the fixed 131.8 m benchmark; within each season,success increases as starting field position moves closer to the opposition half.***
 
 - **Context Matters:**  
   Starting position has a clear effect. Sets beginning deep in a team’s own end (zone `YR`) have the lowest success rate (**18.4%**), while those starting closer to the opposition’s line (`CL`) have the highest (**21.2%**).
