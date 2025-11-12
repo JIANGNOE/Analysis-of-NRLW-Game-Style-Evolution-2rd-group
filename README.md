@@ -120,14 +120,12 @@ However, this average hides key patterns:
 
 - **League Evolution:**  
   Attacking success has increased over time, from **16.4% in 2018** to **21.2% in 2024**, suggesting genuine improvement in league quality.
+  These plots show genuine improvement in attacking performance over time on a fixed benchmark, with strong dependence on starting zone.
   <img width="1800" height="1000" alt="fig_evolution_season_zone" src="https://github.com/user-attachments/assets/2d42958e-75b4-4655-a35f-9112364b853c" />
     ***Figure 1. Far-set rate by season and starting zone (collapsed).Lines show different starting zones. Over time, far-set rates gradually rise on the fixed 131.8 m benchmark; sets starting in Good Ball zones are consistently most likely to succeed, while Own Half starts are least likely.***
 
   <img width="2000" height="1200" alt="fig_heatmap_season_zone" src="https://github.com/user-attachments/assets/dfefc636-85ce-4e4b-9733-967e10d6a6dc" />
     ***Figure 2. Far-set rate by season and starting zone.Warmer colours indicate a higher probability of a far set. Across seasons we see generally improving far-set rates on the fixed 131.8m benchmark, and within each season success strongly increases as starting field position moves closer to the opposition half.***
-
-   These plots show genuine improvement in attacking performance over time on a fixed benchmark, with strong dependence on starting zone.
-
 
 - **Context Matters:**  
   Starting position has a clear effect. Sets beginning deep in a team’s own end (zone `YR`) have the lowest success rate (**18.4%**), while those starting closer to the opposition’s line (`CL`) have the highest (**21.2%**).
