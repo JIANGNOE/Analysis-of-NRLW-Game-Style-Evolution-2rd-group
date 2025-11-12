@@ -533,4 +533,4 @@ ADD ALL that info here later, who did what etc
 
 Primary contact: , University Email: , Personal: 
 
-Contributors: [Kevin Hang](https://github.com/kevinhang19), [Yue Li](https://github.com/Yuri12-3),  [Mengyuan Jiang](https://github.com/JIANGNOE), [Ansh Patel] (https://github.com/ansh428), [Mushfiq Ahmed](https://github.com/mushfiqahmeddd)
+Contributors: [Kevin Hang](https://github.com/kevinhang19), [Yue Li](https://github.com/Yuri12-3),  [Mengyuan Jiang](https://github.com/JIANGNOE), [Ansh Patel](https://github.com/ansh428), [Mushfiq Ahmed](https://github.com/mushfiqahmeddd)
