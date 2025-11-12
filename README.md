@@ -121,6 +121,7 @@ However, this average hides key patterns:
 - **League Evolution:**  
   Attacking success has increased over time, from **16.4% in 2018** to **21.2% in 2024**, suggesting genuine improvement in league quality.
   <img width="1800" height="1000" alt="fig_evolution_season_zone" src="https://github.com/user-attachments/assets/2d42958e-75b4-4655-a35f-9112364b853c" />
+    ***Figure 1. Far-set rate by season and starting zone (collapsed).Lines show different starting zones. Over time, far-set rates gradually rise on the fixed 131.8 m benchmark; sets starting in Good Ball zones are consistently most likely to succeed, while Own Half starts are least likely.***
 
   <img width="2000" height="1200" alt="fig_heatmap_season_zone" src="https://github.com/user-attachments/assets/dfefc636-85ce-4e4b-9733-967e10d6a6dc" />
   *These plots show genuine improvement in attacking performance over time on a fixed benchmark, with strong dependence on starting zone.*
