@@ -125,6 +125,7 @@ However, this average hides key patterns:
 
   <img width="2000" height="1200" alt="fig_heatmap_season_zone" src="https://github.com/user-attachments/assets/dfefc636-85ce-4e4b-9733-967e10d6a6dc" />
     ***Figure 2. Far-set rate by season and starting zone.Warmer colours indicate a higher probability of a far set. Across seasons we see generally improving far-set rates on the fixed 131.8m benchmark, and within each season success strongly increases as starting field position moves closer to the opposition half.***
+
   *These plots show genuine improvement in attacking performance over time on a fixed benchmark, with strong dependence on starting zone.*
 
 
@@ -367,15 +368,19 @@ We compare regularised GLM (logistic) with Random Forest, Gradient Boosting, and
 
 - ROC Curve: `fig_roc_logistic.png`
    <img width="1600" height="1000" alt="fig_roc_logistic" src="https://github.com/user-attachments/assets/be62ba8b-8d79-4c6a-bc97-7fa0aa85724e" />
+   ***Figure 3.ROC — Logistic (AUC = 0.524).The curve is only a little above the diagonal, so the model is just slightly better than random. There isn’t a clear threshold that gives both high TPR and low FPR***
 
 - Precision–Recall Curve: `fig_pr_logistic.png`
    <img width="1600" height="1000" alt="fig_pr_logistic" src="https://github.com/user-attachments/assets/30044827-e975-48c0-ba1a-c70d0dbecaa4" />
+   ***Figure 4. Precision–Recall — logistic model (test set).Average Precision ≈ 0.206, close to the class prevalence (~0.20). The curve stays near the baseline: we get high precision only at very small recall, and recall drops quickly as we try to keep precision high.This means the model can rank sets modestly but can’t retrieve many far sets without many false positives.***
 
 - Calibration (Reliability) Curve: `fig_calibration_logistic.png`
    <img width="1600" height="1000" alt="fig_calibration_logistic" src="https://github.com/user-attachments/assets/ea39fbc7-eeef-4697-af46-7908fc95e18f" />
+   ***Figure 5. Calibration — logistic model (test set).Each point compares predicted vs actual far-set rate. All points sit well below the 45° line, meaning the model overestimates the true probability of a far set, so raw probabilities should be treated cautiously or recalibrated.***
 
 - Decile Lift Chart: `fig_decile_lift.png`
    <img width="1600" height="900" alt="fig_decile_lift" src="https://github.com/user-attachments/assets/160e18a0-24c2-465b-8e68-2a5b727ac132" />
+   ***Figure 6. Decile lift — logistic model (test set).Test sets are sorted into 10 groups from lowest to highest predicted probability. The far-set rate steadily increases across deciles, meaning higher model scores generally correspond to more far sets, so the model provides a weak but sensible ranking of risk.***
 
 ---
 
@@ -398,9 +403,11 @@ We used two methods to find the most influential features:
 
 - Permutation Importance: `fig_perm_importance_logistic.png`
    <img width="1800" height="1200" alt="fig_perm_importance_logistic" src="https://github.com/user-attachments/assets/d0fcd38d-deed-430b-be41-7a658da99f53" />
+   ***Figure 7. Permutation importance — logistic model (top 20).Bars show how much model performance drops when each variable is shuffled. Starting zone and certain team identities matter most for predicting far sets, while season and half contribute relatively little on their own.***
 
 - Odds Ratios: `fig_odds_ratios_top20.png`
   <img width="1800" height="1200" alt="fig_odds_ratios_top20" src="https://github.com/user-attachments/assets/60ebc821-93a3-4520-8db4-95015d34761b" />
+  ***Figure 8. Logistic odds ratios — top 20 effects.Bars above 1 mean a higher chance of a far set; bars below 1 mean lower chance. Certain teams and good attacking zones are linked with better outcomes, while deep own-half starts and weaker teams reduce far-set likelihood.***
 
 ### Key Insights
 
