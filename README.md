@@ -124,6 +124,7 @@ However, this average hides key patterns:
     ***Figure 1. Far-set rate by season and starting zone (collapsed).Lines show different starting zones. Over time, far-set rates gradually rise on the fixed 131.8 m benchmark; sets starting in Good Ball zones are consistently most likely to succeed, while Own Half starts are least likely.***
 
   <img width="2000" height="1200" alt="fig_heatmap_season_zone" src="https://github.com/user-attachments/assets/dfefc636-85ce-4e4b-9733-967e10d6a6dc" />
+    ***Figure 2. Far-set rate by season and starting zone.Warmer colours indicate a higher probability of a far set. Across seasons we see generally improving far-set rates on the fixed 131.8m benchmark, and within each season success strongly increases as starting field position moves closer to the opposition half.***
   *These plots show genuine improvement in attacking performance over time on a fixed benchmark, with strong dependence on starting zone.*
 
 
