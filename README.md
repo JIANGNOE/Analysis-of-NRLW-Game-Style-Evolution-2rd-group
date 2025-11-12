@@ -529,4 +529,8 @@ ADD ALL that info here later, who did what etc
 - Newans, T. et al. (2021). Match demands of female rugby league players.  
 - King, D. et al. (2010, 2022). Concussion and injury in rugby league.  
 
+## 12.Contact
 
+Primary contact: , University Email: , Personal: 
+
+Contributors: [Kevin Hang](https://github.com/kevinhang19), [Yue Li](https://github.com/Yuri12-3),  [Mengyuan Jiang](https://github.com/JIANGNOE), 
