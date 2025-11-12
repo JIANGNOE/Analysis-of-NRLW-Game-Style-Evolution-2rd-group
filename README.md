@@ -360,7 +360,6 @@ We compare regularised GLM (logistic) with Random Forest, Gradient Boosting, and
 
 - Real signal is in in-set execution (play, decisions, pressure), which is intentionally excluded here; this model is a clean, leakage-safe baseline, not a high-accuracy predictor.
 
-### [INSERT FIGURES HERE]
 
 **Model performance plots for the winning model (logreg_bal):**
 
@@ -394,8 +393,6 @@ We used two methods to find the most influential features:
   Show how each feature affects the probability of a far set.  
   - Odds ratio **> 1:** Increases far-set likelihood  
   - Odds ratio **< 1:** Decreases far-set likelihood
-
-### [INSERT FIGURES HERE]
 
 - Permutation Importance: `fig_perm_importance_logistic.png`
    <img width="1800" height="1200" alt="fig_perm_importance_logistic" src="https://github.com/user-attachments/assets/d0fcd38d-deed-430b-be41-7a658da99f53" />
