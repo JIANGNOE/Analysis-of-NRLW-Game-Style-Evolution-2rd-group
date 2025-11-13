@@ -496,20 +496,13 @@ This would shift the goal from prediction to driver analysis, which is likely mo
 This report set out to answer the research question:  
 **To what extent do pre-set contextual factors influence the likelihood of a 'far set'?**
 
-To explore this, we defined a clear benchmark.  
-A far set was any possession that gained more than 13.18 metres, which is the 80th percentile of own-half gains in 2018. 
-We trained five machine learning models using data from 2018–2024, and then tested them on the 2025 season, which was kept separate as a true “future” test.
+To explore this, we defined a clear benchmark. A far set was any possession that gained more than 13.18 metres, which is the 80th percentile of own-half gains in 2018. We trained five machine learning models using data from 2018–2024, and then tested them on the 2025 season, which was kept separate as a true “future” test.
 
-The results were clear.  
-The more complex tree-based models (**Random Forest** and **Gradient Boosting**) **overfit** the training data and did not perform well on the 2025 test set.  
-The **Regularised GLM (Elastic-Net)** model performed best, reaching a **test AUC of about 0.53**.
+The results were clear. The more complex tree-based models (**Random Forest** and **Gradient Boosting**) **overfit** the training data and did not perform well on the 2025 test set. The **Regularised GLM (Elastic-Net)** model performed best, reaching a **test AUC of about 0.53**.
 
 An **AUC of 0.53** means the model is only **slightly better than random guessing**. Hence, the answer to the research question is that [re-set contextual factors exert only a negligible influence on the likelihood of a 'far set'. This shows that pre-set context alone is a weak predictor of attacking success in the NRLW.
 
-This is not a failure of modelling as it is an important insight about the game.  
-It shows that a set’s outcome is not determined by where or when it start*, but by what happens within the set: the skill, tactics, and execution** of the players.  
-The model helps quantify the baseline expectation for each possession, giving coaches and analysts a fair way to measure true performance, separate from the situation they start in.
-This project concludes that static context should not be used for future prediction. Instead, the model is most valuable as a context-adjusted expectation benchmark.
+This is not a failure of modelling as it is an important insight about the game. It shows that a set’s outcome is not determined by where or when it start*, but by what happens within the set: the skill, tactics, and execution** of the players. The model helps quantify the baseline expectation for each possession, giving coaches and analysts a fair way to measure true performance, separate from the situation they start in. This project concludes that static context should not be used for future prediction. Instead, the model is most valuable as a context-adjusted expectation benchmark.
 
 
 ---
@@ -519,7 +512,7 @@ This project concludes that static context should not be used for future predict
 ### Appendix A — Reproducibility steps 
 
 ### Appendix B — Contributers
-ADD ALL that info here later, who did what etc
+Contributors: [Kevin Hang](https://github.com/kevinhang19), [Yue Li](https://github.com/Yuri12-3),  [Mengyuan Jiang](https://github.com/JIANGNOE), [Ansh Patel](https://github.com/ansh428), [Mushfiq Ahmed](https://github.com/mushfiqahmeddd)
 
 ### Appendix C — References
 - Repository: *data3001-data NRLW — Change in NRLW Game Patterns (2018 to Present).*
@@ -528,8 +521,3 @@ ADD ALL that info here later, who did what etc
 - Newans, T. et al. (2021). Match demands of female rugby league players.  
 - King, D. et al. (2010, 2022). Concussion and injury in rugby league.  
 
-## 12.Contact
-
-Primary contact: , University Email: , Personal: 
-
-Contributors: [Kevin Hang](https://github.com/kevinhang19), [Yue Li](https://github.com/Yuri12-3),  [Mengyuan Jiang](https://github.com/JIANGNOE), [Ansh Patel](https://github.com/ansh428), [Mushfiq Ahmed](https://github.com/mushfiqahmeddd)
