@@ -28,20 +28,19 @@ This project examines how pre-set contextual factors influence attacking outcome
 
 Our research question is:
 
-> **"Given what we know at the start of a set (season, team, starting zone, half), what is the probability this possession will be a far set?"**
+> **To what extent do pre-set contextual factors influence the likelihood of a 'far set'?**
 
-A **"far set"** is defined as a possession where the maximum forward gain meets or exceeds a fixed distance benchmark. For this report, that benchmark is **131.8 metres**, calculated as the **80th percentile** of gains from own-half starts in the 2018 season. Keeping this benchmark fixed allows us to compare teams and seasons on a consistent scale, avoiding "moving goalposts" as the league expands and evolves.
+A far set is defined as a possession where the maximum forward gain meets or exceeds a fixed distance benchmark. This benchmark is set using a fixed reference point from the data, which is crucial for making consistent comparisons across the league's rapid expansion.
 
-This modelling task is directly grounded in how coaches and analysts review performance. By predicting the likelihood of a "far set" using only information available before the set begins (season, starting field zone, half, team identity), we ensure a **"leakage-safe"** model that reflects real decision-making conditions during games.
+To set a consistent standard for what counts as "far," we established a fixed performance level using data from the 2018 season. We looked at all sets that started in a team's own half and identified the distance achieved by the top 20% of those sets (the 80th percentile). This calculation resulted in the number 131.8. This figure must be correctly understood as a distance of 13.18 metres (since 131.8 decimetres equals 13.18 metres). This fixed 13.18 metre standard is used across all seasons and teams to ensure all comparisons are made on the same reliable measure.
 
-Such a model provides context-adjusted expectations for possession quality, helping answer practical questions such as:
+This study is focused only on information available before the set starts. This prevents data leakage and makes the model realistic for coaches. The model helps provide context-adjusted probabilities, a fairer way to measure performance that tells us if a team is achieving results above or below expectation for their specific starting position, helping answer practical questions such as:
 
 - “Given we started this set in our own half, did we perform above or below expectation?”
 - “Is our improvement over seasons genuine, or just driven by better field position?”
 - “Are some teams consistently outperforming others in similar contexts?”
 
-Understanding this relationship is important because the NRLW has undergone **rapid expansion** since 2018. Traditional raw metrics (like average metres per game) fail to account for differences in possession context, making fair comparisons difficult. Our approach resolves this by producing **context-adjusted probabilities**, enabling clearer performance benchmarking across different eras.
-
+Understanding this relationship is important because the NRLW has undergone rapid expansion since 2018. Traditional raw metrics (like average metres per game) fail to account for differences in possession context, making fair comparisons difficult. Our approach resolves this by producing context-adjusted probabilities, enabling clearer performance benchmarking across different eras.
 
 ---
 
