@@ -248,10 +248,12 @@ That is why we trained on 2018–2024 and tested on the 2025 season.
 Our primary evaluation metric was **AUC (Area Under the Curve)**, which measures how well a model distinguishes between a “far set” (1) and a “normal set” (0):
 
 - **AUC = 1.0:** Perfect model  
-- **AUC = 0.5:** No better than a random coin flip  
+- **AUC = 0.5:** No better than a random coin flip
+
+All models used the same four features: `Seasonid`, `Teamname`, `setZone`, and `HalfTag`.
+To systematically evaluate how pre-set factors influenced the likelihood of a far set, a progressive model flow was implemented. Each model was developed to address the limitations observed in the previous to improve interpretability, robustness, and generalisation. This structured progression ensured the final model was not chosen for its accuracy, but for its capacity to generalise unseen data while providing meaningful insights.
 
 ## 6.2 Model Flow
-All models used the same four features: `Seasonid`, `Teamname`, `setZone`, and `HalfTag`.
 To systematically evaluate how pre-set factors influenced the likelihood of a far set, a progressive model flow was implemented. Each model was developed to address the limitations observed in the previous to improve interpretability, robustness, and generalisation. This structured progression ensured the final model was not chosen for its accuracy, but for its capacity to generalise unseen data while providing meaningful insights.
 
 
