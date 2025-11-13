@@ -236,10 +236,12 @@ Team identity clearly influences outcomes. The **Zebras** outperform all others 
 The game half has a weak relationship with success. Far-set rates are similar across halves, 20.9% (`Mid`), 20.4% (`Opp`), and 19.0% (`Own`).  
 We’ll include it for completeness, but it’s unlikely to be a major driver.
 
+
 ---
 
-# 6. Models Overview
+# 6. Model Overview and Flow
 
+## 6.1 Overview
 To answer our research question, we trained several classification models. The goal was not just to find the most accurate model, but the one that could best generalise to unseen data.  
 That is why we trained on 2018–2024 and tested on the 2025 season.
 
@@ -248,83 +250,14 @@ Our primary evaluation metric was **AUC (Area Under the Curve)**, which measures
 - **AUC = 1.0:** Perfect model  
 - **AUC = 0.5:** No better than a random coin flip  
 
+## 6.2 Model Flow
 All models used the same four features: `Seasonid`, `Teamname`, `setZone`, and `HalfTag`.
-
-
-## 6.1. Model 1: Baseline Logistic Regression (Balanced)
-
-**What is it?**  
-This model served as our simple and reliable starting point. It is a standard logistic regression model configured with `class_weight='balanced'`, ensuring that both classes receive proportional attention during training.
-
-**Why did we choose it?**  
-Given the 80/20 imbalance in the target variable, this setting ensures the model assigns greater importance to the minority “far set” class. Without this adjustment, the model would tend to predict “0” for most cases, achieving high accuracy but poor usefulness.
-
-**Results**  
-The baseline logistic regression performed **respectably**, providing a **solid benchmark** for subsequent models to surpass.
-
----
-
-## 6.2. Model 2: Regularised GLM (Elastic-Net)
-
-**What is it?**  
-This is an advanced version of logistic regression within the **Generalised Linear Model (GLM)** framework. It incorporates **Elastic-Net regularisation**, a combination of **L1 (Lasso)** and **L2 (Ridge)** penalties, to improve model robustness and interpretability.
-
-**Why did we choose it?**  
-Regularisation mitigates **overfitting** by discouraging overly complex or extreme coefficient values. This helps ensure that the model captures genuine, generalisable patterns rather than noise from the training data.  
-Hyperparameters were optimised through **cross-validation** to achieve the best balance between bias and variance.
-
-**Results**  
-This model achieved the **highest performance** on the 2025 holdout test set, with a **Test AUC of approximately 0.53**.  
-It demonstrated the best **generalisation ability**, outperforming all other models in both stability and predictive accuracy.
-
----
-
-## 6.3. Model 3: Random Forest Classifier
-
-**What is it?**  
-The Random Forest is an **ensemble tree-based model** that constructs multiple decision trees using random subsets of data and features. The final prediction is obtained by averaging the outputs of all individual trees, which helps to reduce variance and improve stability.
-
-**Why did we choose it?**  
-This model can uncover **non-linear interactions** and complex dependencies between features. For instance, it can identify relationships such as “Season 2024 combined with Zone YR is low-success, but Season 2024 combined with Zone CL is high-success,” which a linear model might miss.
-
-**Results**  
-Despite its flexibility, the Random Forest exhibited **overfitting**. While performance on the training data was strong, it **failed to generalise** to the 2025 test set, performing below the Regularised GLM.
-
----
-
-## 6.4. Model 4: Gradient Boosting Classifier
-
-**What is it?**  
-Gradient Boosting is another **ensemble learning** approach that builds trees sequentially. Each new tree is designed to **correct the errors** of the previous ensemble, gradually improving performance over many iterations.
-
-**Why did we choose it?**  
-This model is known for its **high predictive power** and ability to learn complex feature interactions. It is often effective in structured data problems where linear assumptions are too limiting.
-
-**Results**  
-The Gradient Boosting Classifier also **overfit** the training data and performed **worse than the Regularised GLM** on the 2025 test set. Its inability to generalise suggests it captured season-specific or team-specific noise rather than stable predictive relationships.
-
----
-
-## 6.5. Model 5: Histogram-based Gradient Boosting Classifier (HistGBM)
-
-**What is it?**  
-The HistGradientBoosting Classifier is a **modern, high-performance implementation** of Gradient Boosting that accelerates training by grouping continuous features into discrete bins (“histograms”). This makes it particularly efficient on large datasets.
-
-**Why did we choose it?**  
-It represents the **state of the art** among tree-based models and is widely recognised for balancing speed, scalability, and accuracy. We included it to test whether this enhanced algorithm could identify stronger signals in the data.
-
-**Results**  
-Despite its advantages, the HistGradientBoosting Classifier also **overfit** the historical data and did not generalise well to the 2025 season. Its performance was **lower than the Regularised GLM**, reaffirming that simpler, well-regularised linear models were more effective for this problem.
-
-
----
-
-# 7. Model flow
 To systematically evaluate how pre-set factors influenced the likelihood of a far set, a progressive model flow was implemented. Each model was developed to address the limitations observed in the previous to improve interpretability, robustness, and generalisation. This structured progression ensured the final model was not chosen for its accuracy, but for its capacity to generalise unseen data while providing meaningful insights.
+
 
 | Step | Model | Purpose| Limitation → Next Model |
 |------|-------|---------|----------------|
-| 1 |Radnom Forest Classifier | Capture non-linear relationships betweem factors using multiple decision trees | While flexible, the model overfit from previous seasons, learning patterns that did not generalise to the unseen data from 2025 season. This indicated that the model memorised past structures rather than identifying predictive relationships. To address this a Gradient Boosting Classifier was introduced to apply error correction and focus on learning on residuals. |
+| 1 |Random Forest Classifier | Capture non-linear relationships betweem factors using multiple decision trees | While flexible, the model overfit from previous seasons, learning patterns that did not generalise to the unseen data from 2025 season. This indicated that the model memorised past structures rather than identifying predictive relationships. To address this a Gradient Boosting Classifier was introduced to apply error correction and focus on learning on residuals. |
 | 2 | Gradient Boosting Classifier |Enhance predictive power where each tree corrects the mistakes of the previous ensemble | Although performance improved slightly (AUC ≈ 0.519), the model remained sensitive to hyperparameter tuning, often leading to unstable performance across folds. This motivated for the use of a more efficient and scalable variant, the Histogram-Based Gradient Boosting Classifier. |
 | 3| Histogram-Based Gradient Boosting | Improve computational efficiency by using histogram binning to speed up training without sacrificing accuracy.| Despite a marginally higher Average Precision (AP = 0.203), overall model performance plateaued. This confirmed that increasing model complexity did not reveal stronger predictive power within the given variables. The next step was to test a simpler, interpretable linear model which is the Logistic Regression. |
 | 4 | Baseline Logistic Regression |Provide an interpretable benchmark model with balanced class weighting to account for the 80/20 class imbalance. | The model achieved stable and comparable perforance (AUC ≈ 0.525) but assumed strictly linear relationships between predictors and the log of a far set. Without regularisation, coffecients risked minor overfitting or instability. To enhance generalisation, while maintaining interpretability, a Regularised GLM was introduced |
