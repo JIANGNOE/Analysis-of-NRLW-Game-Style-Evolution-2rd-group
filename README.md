@@ -132,12 +132,12 @@ However, this average hides key patterns:
 
 ## Modelling Plan
 
-We used a **time-aware split** to simulate real forecasting, no shuffling across seasons.
+To accurately test the influence of pre-set context and simulate real forecasting conditions, we structured the experiment using a time-aware split without shuffling possessions across seasons.
 
 - **Training Set:** 2018–2024 data (**19,550 possessions**)  
 - **Test Set (Holdout):** Entire 2025 season (**9,441 possessions**)
 
-This ensures the model learns from history and is evaluated on how well it predicts the *future* (2025 season).
+This ensures the model learns from history and is evaluated on how well it predicts the future (2025 season).
 
 Given the target imbalance, **accuracy** was deemed an inappropriate performance measure. Instead, the primary evaluation metric was the **Area Under the ROC Curve (AUC)**.  
 AUC measures the model’s ability to discriminate between positive and negative classes with 0.5 representing random guessing and *.0 indicating perfect classification.
@@ -149,11 +149,14 @@ We compared five classification models:
 
 2. **Regularised Generalised Linear Model** 
    A refined version with hyperparameter tuning via cross-validation.
-
-4. **Gradient Boosting Classifier**  
+   
+3. **Random Forest Classifier**
+   A model used to capture non-linear relationships and benchmark the maximum possible predictive score.
+  
+5. **Gradient Boosting Classifier**  
    A sequential ensemble model that builds trees iteratively, where each tree focuses on correcting the errors of the previous ones.
 
-5. **Histogram-based Gradient Boosting Classifier (HistGBM)**  
+6. **Histogram-based Gradient Boosting Classifier (HistGBM)**  
    A more computationally efficient implementation of Gradient Boosting that uses feature binning to accelerate training while maintaining comparable accuracy.
 
 
