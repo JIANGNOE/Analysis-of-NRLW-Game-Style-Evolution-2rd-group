@@ -36,9 +36,9 @@ To set a consistent standard for what counts as "far," we established a fixed pe
 
 This study is focused only on information available before the set starts. This prevents data leakage and makes the model realistic for coaches. The model helps provide context-adjusted probabilities, a fairer way to measure performance that tells us if a team is achieving results above or below expectation for their specific starting position, helping answer practical questions such as:
 
-- “Given we started this set in our own half, did we perform above or below expectation?”
-- “Is our improvement over seasons genuine, or just driven by better field position?”
-- “Are some teams consistently outperforming others in similar contexts?”
+- Given we started this set in our own half, did we perform above or below expectation?
+- Is our improvement over seasons genuine, or just driven by better field position?
+- Are some teams consistently outperforming others in similar contexts?
 
 Understanding this relationship is important because the NRLW has undergone rapid expansion since 2018. Traditional raw metrics (like average metres per game) fail to account for differences in possession context, making fair comparisons difficult. Our approach resolves this by producing context-adjusted probabilities, enabling clearer performance benchmarking across different eras.
 
@@ -106,7 +106,7 @@ These factors were used to predict the binary target variable, farSet (sets that
 
 ## Descriptive Statistics and General Insights
 
-We began with **28,991 team possessions ("sets")** from the **2018 to 2025** seasons.  
+We began with **28,991 sets** from the **2018 to 2025** seasons.  
 Using our fixed benchmark of 13.18 metres, we found the league-wide average far set rate is 19.95%, meaning roughly 1 in every 5 possessions** is a "far set."
 
 However, this average hides key patterns:
@@ -453,7 +453,7 @@ Since the model cannot see these true causes, it assigns credit to `Teamname_Zeb
 
 ### Why Random Assignment Helps
 
-In a perfect scientific experiment, we could fix this bias with random assignment. If we could randomly assign all the best players to different teams each season, we would break the link between Teamname and player_skill. In that world, the Teamname variable's effect would drop to zero, and we would have an "unbiased" estimate.
+In a perfect scientific experiment, we could fix this bias with random assignment. If we could randomly assign all the best players to different teams each season, we would break the link between Teamname and player_skill. In that world, the Teamname variable's effect would drop to zero, and we would have an unbiased estimate.
 
 But in real-world sports data, we cannot do this. Good players are not randomly assigned but are drafted by or signed with specific teams. This creates a strong correlation between Teamname and the omitted variables (skill, coaching).
 
@@ -494,10 +494,10 @@ This would shift the goal from prediction to driver analysis, which is likely mo
 
 
 This report set out to answer the research question:  
-**"To what extent do pre-set contextual factors influence the likelihood of a 'far set'?"**
+**To what extent do pre-set contextual factors influence the likelihood of a 'far set'?**
 
 To explore this, we defined a clear benchmark.  
-A "far set" was any possession that gained more than 13.18 metres, which is the 80th percentile of own-half gains in 2018. 
+A far set was any possession that gained more than 13.18 metres, which is the 80th percentile of own-half gains in 2018. 
 We trained five machine learning models using data from 2018–2024, and then tested them on the 2025 season, which was kept separate as a true “future” test.
 
 The results were clear.  
