@@ -28,7 +28,7 @@ This project examines how pre-set contextual factors influence attacking outcome
 
 Our research question is:
 
-> **To what extent do pre-set contextual factors influence the likelihood of a 'far set'?**
+**To what extent do pre-set contextual factors influence the likelihood of a 'far set'?**
 
 A far set is defined as a possession where the maximum forward gain meets or exceeds a fixed distance benchmark. This benchmark is set using a fixed reference point from the data, which is crucial for making consistent comparisons across the league's rapid expansion.
 
@@ -46,17 +46,19 @@ Understanding this relationship is important because the NRLW has undergone rapi
 
 ## 2. Executive summary
 
-This report details the process of building and evaluating a set of machine learning models to predict the probability of a "far set" (a possession gaining ≥131.8m). The analysis uses only pre-set contextual data from the NRLW 2018–2025 seasons, ensuring the prediction reflects information actually available at the moment a set begins.
+This report details the process of building and evaluating a set of machine learning models to answer the question:  
+**To what extent do pre-set contextual factors influence the likelihood of a "far set"?**
 
-To mimic real-world forecasting, we used a time-aware train–test split, training models on 2018–2024 data and evaluating performance on the unseen 2025 season. This prevents information leakage and tests whether learned patterns generalise to a future competition environment.
+The "far set" target is defined as a possession gaining at least 13.18 metres (≥ 131.8 decimetres), a benchmark fixed from the top 20% of the 2018 season data.  
+The analysis uses only pre-set contextual data from the NRLW 2018–2025 seasons, ensuring the prediction reflects information actually available at the moment a set begins.
+
+To ensure realistic forecasting, we used a time-aware train–test split, training models listed below on 2018–2024 data and evaluating performance on the unseen 2025 season. This prevents information leakage and tests whether learned patterns generalise to a future competition environment.
 
 - Baseline Logistic Regression (with balanced classes)
 - Regularised GLM (Elastic-Net Logistic Regression)
 - Random Forest
 - Gradient Boosting Classifier
 - HistGradientBoosting Classifier
-
----
 
 ### Main Findings
 
@@ -75,33 +77,28 @@ Model coefficient and permutation importance analyses show:
 - Half has minimal independent impact.
 
 **Practical Implication:**  
-The limited predictive power of context implies that what happens during the set execution, decision-making, play selection, ruck tempo, athleticism is the primary determinant of attacking success. However, the model is still valuable as a context-adjusted expectation benchmark, allowing coaches and analysts to evaluate whether a team is performing above or below expectation given the situation.
-
+The limited predictive power of static context provides a powerful insight for coaching staff: set success is not pre-determined. Set outcomes are driven by in-set execution, player skill, and decision-making—factors that occur during the play itself. The model is still valuable, however, as it provides a context-adjusted expectation benchmark, allowing analysts to evaluate if a team is performing above or below expectation given their situation.
 
 ---
 
 # 3. Background
 
-This report is built to answer a specific, practical question for coaches and analysts:
+The primary objective of this project is to quantitatively measure the influence of static, pre-set contextual factors on attacking performance in the NRLW. Our goal is to answer the question: To what extent does context alone pre-determine success?
 
-> **"Given what we know at the start of a set (season, team, starting zone, half), what is the probability this possession will be a far set?"**
+This objective is important because the NRLW has changed dramatically since its inception in 2018, marked by rapid expansion, increased athleticism, and professionalisation. Comparing teams across these different eras using simple raw metrics (like average metres gained per game) is inherently unfair. A team in 2025 might appear to have superior attacking performance than a 2018 team simply because they benefited from better average field position, not necessarily because they were more skilled. This analysis aims to isolate and quantify the leverage of context, providing analysts with a fair context-adjusted expectation for set success.
 
-This question is important because the **NRLW has changed dramatically since 2018**. Comparing teams across different seasons using simple stats like *average metres gained* is unfair. A team in 2024 might look better than a 2018 team simply because they started in better field positions, not because they were more skilled.
+In sports analytics, prediction models commonly focus on outcomes like scoringor win probability, often using complex features like player fatigue or historical opponent match-ups. However, in the realm of in-game tactical analysis for sports like Rugby League, there is a gap in studies that specifically quantify the influence of static positional context versus dynamic execution on set-level metrics. Our work contributes directly to this gap. By achieving a low predictive score, we provide a robust, data-driven quantification of the widely held coaching principle that in-set execution dominates static factors. This result validates the current tactical focus of high-performance teams.
 
-To solve this, we first need a **consistent definition of success**.  
-We define a **"far set"** as any possession that gains **131.8 metres or more**.  
-This value represents the **80th percentile of metres gained from own-half starts in 2018**. By fixing this benchmark, we avoid “moving the goalposts” and can compare performances across seasons fairly.
+To ensure our findings are realistic and directly applicable to setting pre-game expectations, we adhere to using only factors that are known before the set begins. This prevents data leakage, the use of information generated during the set (such as the number of passes, ruck tempo, or tackles broken) to predict the outcome itself.
 
-Crucially, our models only use predictors that a coach would know **before** the set begins:
+We used the following pre-set contextual factors as predictors:
+- Teamname: The identity of the team in possession.  
+- Seasonid: The year of the competition, which captures league-wide changes in athleticism and structure.  
+- HalfTag: The simplified starting zone, categorized as 'Own,' 'Mid,' or 'Opponent’s' half.  
+- halfNumber and setcount: Details about the time and sequence of the possession within the game.  
 
-- **Season:** 2018, 2019, etc.  
-- **Team:** Which team has the ball.  
-- **Starting Zone:** Where on the field the set starts (e.g., deep in their own half, midfield).  
-- **Half:** First or second half.
+These factors were used to predict the binary target variable, farSet (sets that gained over the fixed 13.18 metre benchmark), allowing us to measure the context's influence on the likelihood of a high-gain possession.
 
-This approach prevents **data leakage**, we are not using information from within the set (like number of passes or tackle breaks) to predict the outcome. This keeps the model realistic for setting **real-world expectations**, helping answer questions like:
-
-> “We started this set deep in our territory. Did we perform above or below what was expected for that situation?”
 
 ---
 
@@ -110,12 +107,12 @@ This approach prevents **data leakage**, we are not using information from withi
 ## Descriptive Statistics and General Insights
 
 We began with **28,991 team possessions ("sets")** from the **2018 to 2025** seasons.  
-Using our fixed benchmark of **131.8 metres**, we found the league-wide average *far set rate* is **19.95%**, meaning roughly **1 in every 5 possessions** is a "far set."
+Using our fixed benchmark of 13.18 metres, we found the league-wide average far set rate is 19.95%, meaning roughly 1 in every 5 possessions** is a "far set."
 
 However, this average hides key patterns:
 
 - **Imbalance:**  
-  The target variable `farSet_fixed` is imbalanced, 80% of sets are “failures” (0) and only 20% are “successes”. This will influence our model choice and evaluation metrics.
+  The target variable `farSet_fixed` is imbalanced, 80% of sets are “failures” and only 20% are “successes”. This will influence our model choice and evaluation metrics.
 
 - **League Evolution:**  
   Attacking success has increased over time, from **16.4% in 2018** to **21.2% in 2024**, suggesting genuine improvement in league quality.
@@ -125,7 +122,7 @@ However, this average hides key patterns:
 
   <img width="2000" height="1200" alt="fig_heatmap_season_zone" src="https://github.com/user-attachments/assets/dfefc636-85ce-4e4b-9733-967e10d6a6dc" />
   
-   ***Figure 2. Far-set rate by season and starting zone. Warmer colors indicate a higher probability of a far set. Across seasons, far-set rates generally rise on the fixed 131.8 m benchmark; within each season,success increases as starting field position moves closer to the opposition half.***
+   ***Figure 2. Far-set rate by season and starting zone. Warmer colors indicate a higher probability of a far set. Across seasons, far-set rates generally rise on the fixed 13.18 m benchmark, within each season,success increases as starting field position moves closer to the opposition half.***
 
 - **Context Matters:**  
   Starting position has a clear effect. Sets beginning deep in a team’s own end (zone `YR`) have the lowest success rate (**18.4%**), while those starting closer to the opposition’s line (`CL`) have the highest (**21.2%**).
@@ -238,10 +235,10 @@ We’ll include it for completeness, but it’s unlikely to be a major driver.
 
 ---
 
-# 6. Models: Design and Results
+# 6. Models Overview
 
-To answer our research question, we trained several classification models. The goal was not just to find the most accurate model, but the one that could best **generalise to unseen data**.  
-That’s why we trained on **2018–2024** and tested on the **2025** season.
+To answer our research question, we trained several classification models. The goal was not just to find the most accurate model, but the one that could best generalise to unseen data.  
+That is why we trained on 2018–2024 and tested on the 2025 season.
 
 Our primary evaluation metric was **AUC (Area Under the Curve)**, which measures how well a model distinguishes between a “far set” (1) and a “normal set” (0):
 
@@ -351,15 +348,15 @@ We compare regularised GLM (logistic) with Random Forest, Gradient Boosting, and
 
 - Less overfitting: Tree ensembles fit noise and don’t generalise as well to 2025.
 
-- Interpretable & compliant: Coefficients/odds ratios are transparent for coaches and use only allowed pre-set inputs (no leakage), easy to re-fit.
+- Interpretable & compliant: Coefficients/odds ratios are transparent for coaches and use only allowed pre-set inputs (no leakage), easy to refit.
 
 - Better calibration: More reliable probabilities for decision-making.
 
-### Key takeaway
+### Key takeaways
 
-- Even the best model has AUC ≈ 0.52–0.53, only slightly above random → pre-set context alone has limited predictive power.
+- Even the best model has AUC ≈ 0.52–0.53, only slightly above random, meaning that pre-set context alone has limited predictive power.
 
-- Real signal is in in-set execution (play, decisions, pressure), which is intentionally excluded here; this model is a clean, leakage-safe baseline, not a high-accuracy predictor.
+- Real signal is in in-set execution (play, decisions, pressure), which is intentionally excluded here since this model is a clean, leakage safe baseline, not a high accuracy predictor.
 
 
 **Model performance plots for the winning model (logreg_bal):**
@@ -449,13 +446,13 @@ No, it’s likely because:
 - They have a **better coach**
 
 Both are **omitted variables**.  
-Since the model can’t see these true causes, it assigns credit to `Teamname_Zebras` instead.
+Since the model cannot see these true causes, it assigns credit to `Teamname_Zebras` instead.
 
 ### Why Random Assignment Helps
 
 In a perfect scientific experiment, we could fix this bias with random assignment. If we could randomly assign all the best players to different teams each season, we would break the link between Teamname and player_skill. In that world, the Teamname variable's effect would drop to zero, and we would have an "unbiased" estimate.
 
-But in real-world sports data, we can't do this. Good players are not randomly assigned but are drafted by or signed with specific teams. This creates a strong correlation between Teamname and the omitted variables (skill, coaching).
+But in real-world sports data, we cannot do this. Good players are not randomly assigned but are drafted by or signed with specific teams. This creates a strong correlation between Teamname and the omitted variables (skill, coaching).
 
 Therefore, the feature importance we identified is biased. The model is not finding causal factors, it is simply finding the best correlations to make a prediction. This is acceptable for our prediction goal, but it means we cannot use this model to say "Team X is good because they are Team X."
 
@@ -464,29 +461,29 @@ Therefore, the feature importance we identified is biased. The model is not find
 
 ## 9. Recommendations
 
-Based on our findings, we have three main recommendations:
+Based on our findings, there are three main recommendations:
 
 ### For Coaches and Analysts: Focus on Execution, Not Context  
 The most significant finding of this report is that pre-set context (starting zone, season, half) has a very weak relationship with attacking success (an AUC of only **0.525**).  
 In simple terms, a set starting in a "bad" position is almost as likely to become a "far set" as one starting in a "good" position.  
-The recommendation is clear: context is not an excuse for failure, nor a guarantee of success.  
-Performance is almost entirely dictated by what happens **during** the set (execution, skill, decision-making, error reduction).  
+The recommendation is clear, context is not an excuse for failure, nor a guarantee of success.  
+Performance is almost entirely dictated by what happens during the set (execution, skill, decision-making, error reduction).  
 Coaches should focus resources on improving these in-set actions rather than worrying excessively about field position.
 
 ### For Performance Benchmarking: Use This Model to Adjust Expectations  
-While the model is not strongly predictive, it is useful for its original purpose: setting a fair, context-adjusted expectation.  
+While the model is not strongly predictive, it is useful for its original purpose which is setting a fair, context-adjusted expectations.  
 For example, the model might predict a 19% chance of a far set from a deep kick return, but a 22% chance from a midfield start.  
 Analysts can use these probabilities as a “pass/fail” mark:  
 - If the team is consistently turning **19% chances into 25% realities**, they are performing **above expectation**.  
 - If they are turning **22% chances into 18% realities**, they are **underperforming**.  
 
-The model’s weakness is its strength: it proves that teams can and should perform from anywhere on the field.
+The model’s weakness is its strength since it proves that teams can and should perform from anywhere on the field.
 
 ### For Future Modelling: Include Execution Variables to Understand Why  
-This model answers *“What is the probability?”* but not *“Why?”*  
+This model answers *“What is the likelihood?”* but not *“Why?”*  
 The low AUC score strongly implies that the real reasons for success are found in the execution variables we intentionally omitted (passes, tackle breaks, errors, kicks, etc.).  
 To build a model that explains attacking success, future research must include these in-set variables.  
-This would shift the goal from **prediction** to **driver analysis**, which is likely more valuable for understanding how to create more successful attacks.
+This would shift the goal from prediction to driver analysis, which is likely more valuable for understanding how to create more successful attacks.
 
 ---
 
@@ -494,22 +491,22 @@ This would shift the goal from **prediction** to **driver analysis**, which is l
 
 
 This report set out to answer the research question:  
-**"Given what we know at the start of a set (season, team, starting zone, half), what is the probability this possession will be a far set?"**
+**"To what extent do pre-set contextual factors influence the likelihood of a 'far set'?"**
 
 To explore this, we defined a clear benchmark.  
-A **"far set"** was any possession that gained **more than 131.8 metres**, which is the **80th percentile of own-half gains in 2018**.  
-We trained **five machine learning models** using data from **2018–2024**, and then tested them on the **2025 season**, which was kept separate as a true “future” test.
+A "far set" was any possession that gained more than 13.18 metres, which is the 80th percentile of own-half gains in 2018. 
+We trained five machine learning models using data from 2018–2024, and then tested them on the 2025 season, which was kept separate as a true “future” test.
 
 The results were clear.  
-The more complex tree-based models (**Random Forest** and **Gradient Boosting**) **overfit** the training data and didn’t perform well on the 2025 test set.  
+The more complex tree-based models (**Random Forest** and **Gradient Boosting**) **overfit** the training data and did not perform well on the 2025 test set.  
 The **Regularised GLM (Elastic-Net)** model performed best, reaching a **test AUC of about 0.53**.
 
-That score is the key finding.  
-An **AUC of 0.53** means the model is only **slightly better than random guessing**. This shows that **pre-set context alone is a weak predictor** of attacking success in the NRLW.
+An **AUC of 0.53** means the model is only **slightly better than random guessing**. Hence, the answer to the research question is that [re-set contextual factors exert only a negligible influence on the likelihood of a 'far set'. This shows that pre-set context alone is a weak predictor of attacking success in the NRLW.
 
 This is not a failure of modelling as it is an important insight about the game.  
 It shows that a set’s outcome is not determined by where or when it start*, but by what happens within the set: the skill, tactics, and execution** of the players.  
 The model helps quantify the baseline expectation for each possession, giving coaches and analysts a fair way to measure true performance, separate from the situation they start in.
+This project concludes that static context should not be used for future prediction. Instead, the model is most valuable as a context-adjusted expectation benchmark.
 
 
 ---
