@@ -142,7 +142,7 @@ This ensures the model learns from history and is evaluated on how well it predi
 Given the target imbalance, **accuracy** was deemed an inappropriate performance measure. Instead, the primary evaluation metric was the **Area Under the ROC Curve (AUC)**.  
 AUC measures the model’s ability to discriminate between positive and negative classes with 0.5 representing random guessing and *.0 indicating perfect classification.
 
-We compared five classification models**:
+We compared five classification models:
 
 1. **Baseline Logistic Regression (Balanced)**  
    A simple, robust baseline model adjusted for class imbalance.
