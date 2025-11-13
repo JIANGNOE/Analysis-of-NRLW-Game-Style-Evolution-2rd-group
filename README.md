@@ -1,4 +1,4 @@
-# DATA3001 NRLW Modelling - Group 1
+# DATA3001 NRLW Modelling - Group 2
 
 <img src="images.jpeg" alt="Dashboard Preview" width="1000">
 
