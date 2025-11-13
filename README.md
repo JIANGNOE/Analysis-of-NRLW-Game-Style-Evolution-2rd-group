@@ -319,6 +319,21 @@ Despite its advantages, the HistGradientBoosting Classifier also **overfit** the
 
 ---
 
+# 7. Model flow
+To systematically evaluate how pre-set factors influenced the likelihood of a far set, a progressive model flow was implemented. Each model was developed to address the limitations observed in the previous to improve interpretability, robustness, and generalisation. This structured progression ensured the final model was not chosen for its accuracy, but for its capacity to generalise unseen data while providing meaningful insights.
+
+| Step | Model | Purpose| Limitation → Next Model |
+|------|-------|---------|----------------|
+| 1 |Radnom Forest Classifier | Capture non-linear relationships betweem factors using multiple decision trees | While flexible, the model overfit from previous seasons, learning patterns that did not generalise to the unseen data from 2025 season. This indicated that the model memorised past structures rather than identifying predictive relationships. To address this a Gradient Boosting Classifier was introduced to apply error correction and focus on learning on residuals. |
+| 2 | Gradient Boosting Classifier |Enhance predictive power where each tree corrects the mistakes of the previous ensemble | Although performance improved slightly (AUC ≈ 0.519), the model remained sensitive to hyperparameter tuning, often leading to unstable performance across folds. This motivated for the use of a more efficient and scalable variant, the Histogram-Based Gradient Boosting Classifier. |
+| 3| Histogram-Based Gradient Boosting | Improve computational efficiency by using histogram binning to speed up training without sacrificing accuracy.| Despite a marginally higher Average Precision (AP = 0.203), overall model performance plateaued. This confirmed that increasing model complexity did not reveal stronger predictive power within the given variables. The next step was to test a simpler, interpretable linear model which is the Logistic Regression. |
+| 4 | Baseline Logistic Regression |Provide an interpretable benchmark model with balanced class weighting to account for the 80/20 class imbalance. | The model achieved stable and comparable perforance (AUC ≈ 0.525) but assumed strictly linear relationships between predictors and the log of a far set. Without regularisation, coffecients risked minor overfitting or instability. To enhance generalisation, while maintaining interpretability, a Regularised GLM was introduced |
+| 5 | Regularised GLM (Elastic Net) | Combine interpretability and generation by penalising coefficients using both LASSO and Ridge regularisation. | The model achieved the best overall performance (AUC ≈ 0.53), proving that well-regualised simplicity generalised better than complex non-linear models. However, its linear nature still limited the capture of deeper contextual effects. This suggests that future work should focus on feature improvements, such as event-level or player specific varaibles. |
+
+
+---
+
+
 # 7. Model Comparison
 
 ## 7.1 Evaluation metrics
