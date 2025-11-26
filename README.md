@@ -463,9 +463,12 @@ This is not a failure of modelling as it is an important insight about the game.
 Contributors: [Kevin Hang](https://github.com/kevinhang19), [Yue Li](https://github.com/Yuri12-3),  [Mengyuan Jiang](https://github.com/JIANGNOE), [Ansh Patel](https://github.com/ansh428), [Mushfiq Ahmed](https://github.com/mushfiqahmeddd)
 
 ### Appendix B — References
-- Repository: *data3001-data NRLW — Change in NRLW Game Patterns (2018 to Present).*
-  
-- Gabbett, T. (2007). Injuries in a national women’s rugby league tournament.  
-- Newans, T. et al. (2021). Match demands of female rugby league players.  
-- King, D. et al. (2010, 2022). Concussion and injury in rugby league.  
+- Repository: data3001-data NRLW — Change in NRLW Game Patterns (2018 to Present). See more on github
+- Fox Sports, n.d. NRLW News and Breaking Stories. [online] Available at: https://www.foxsports.com.au/nrl/nrlw 
+- Gabbett, T.J., 2007. Incidence of injury in women's rugby league. Journal of Science and Medicine in Sport, 10(1).
+- King, D., Gissane, C. and Clark, T., 2022. Concussion in amateur rugby league. Journal of Science and Medicine in Sport, 25(8), pp.623-628.
+- King, D.A., et al., 2010. Injuries in amateur rugby league matches in New Zealand: A comparison between a division 1 and a division 2 team. New Zealand Journal of Sports Medicine, 37(2), pp.58-62.
+- National Rugby League, 2021. NRL Telstra Women's Premiership expansion. [online] Available at: https://www.nrl.com/news/2021/06/11/nrl-telstra-womens-premiership-expansion/ 
+- National Rugby League, n.d. NRLW Official Page. [online] Available at: https://www.nrl.com/nrlw
+- Newans, T., Lovell, R. and Siegler, J.C., 2021. Contextualising the match demands of the NRL Women's Premiership. Journal of Science and Medicine in Sport, 24(5), pp.485-490.
 
